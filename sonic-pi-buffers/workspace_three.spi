@@ -1,0 +1,3 @@
+puts vt
+sleep 1
+puts vt

@@ -1,0 +1,11 @@
+with_fx :reverb do
+  with_fx :distortion, distort: 0.6 do
+    with_fx :flanger do
+      3.times do
+        use_synth :tri
+        play (chord :e3, :minor), release: 0.2
+        sleep 0.25
+      end
+    end
+  end
+end
