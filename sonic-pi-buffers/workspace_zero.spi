@@ -1,0 +1,8 @@
+with_fx :bitcrusher do
+  live_loop :guitar do
+    play 63
+    sleep 1
+    play 69
+    sleep 1
+  end
+end

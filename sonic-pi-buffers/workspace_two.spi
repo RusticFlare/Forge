@@ -1,0 +1,9 @@
+live_loop :a do
+  play 60
+  sleep 1
+end
+
+live_loop :b do
+  play 44
+  sleep 2
+end
