@@ -44,6 +44,3 @@ define :valid_string? do |str|
   end
   stack.empty?
 end
-
-str = '[k c, [k, c, [c, k]]'
-puts string_eval('[k ,c s]',[])

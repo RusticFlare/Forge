@@ -1,26 +1,10 @@
-loops = {
-  :drum1 => [
-    {
-      :sounds => [:k],
-      :sleep => 4
-    }
-  ],
-  :drum2 => [
-    {
-      :sounds => [:c],
-      :sleep => 1
-    },
-    {
-      :sounds => [:s],
-      :sleep => 1
-    }
-  ],
-  :drum3 => [
-    {
-      :sounds => [:et],
-      :sleep => 0.5
-    }
-  ]
-}
+anvil = Hash.new
 
-play_loops loops
+define :forge do |hash|
+  hash.each do |key,val|
+    anvil[key] = string_eval(val,[])
+  end
+  play_loops anvil
+end
+
+forge({ :the_noise => "[k, k s]" })
