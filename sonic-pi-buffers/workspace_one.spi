@@ -1,43 +1,11 @@
-a = [:k, [:k, :c, [:c, :k], :c]]
-b = [:k, [:c, :k]]
-
 loops = {
-  :drum1 => {
-    :size => 2,
-    :interval => 2,
-    0 => [:k]
-  },
-  :drum2 => {
-    :size => 4,
-    :interval => 1,
-    0 => [:s],
-    1 => [:s],
-    2 => [:c],
-    3 => [:s]
-  },
-  :drum3 => {
-    :size => 0.5,
-    :interval => 0.5,
-    0.0 => [:et]
-  }
-}
-
-loops2 = {
   :drum1 => [
     {
-      :sounds => [:k],
-      :sleep => 2
+      :sounds => [],
+      :sleep => 0.5
     }
   ],
   :drum2 => [
-    {
-      :sounds => [:s],
-      :sleep => 1
-    },
-    {
-      :sounds => [:s],
-      :sleep => 1
-    },
     {
       :sounds => [:c],
       :sleep => 1
@@ -55,54 +23,4 @@ loops2 = {
   ]
 }
 
-map = { :k => :drum_heavy_kick, :s => :drum_snare_hard, :c => :drum_cymbal_closed, :et => :elec_tick}
-
-define :play_loops do |hash|
-  hash.each do |key,val|
-    play_thing3(key,val)
-  end
-end
-
-define :play_thing do |pat|
-  pat.each do |el|
-    if el.is_a?(Array)
-      with_bpm_mul(el.size) do
-        play_thing el
-      end
-    else
-      sample map[el]
-      sleep 1
-    end
-  end
-end
-
-define :play_thing3 do |name,pat|
-  live_loop name do
-    pat.each do |act|
-      act[:sounds].each do |el|
-        play_sound(el)
-      end
-      sleep act[:sleep]
-    end
-  end
-end
-
-define :play_thing2 do |name,pat|
-  live_loop name do
-    (0..(pat[:size]-pat[:interval])).step(pat[:interval]) do |index|
-      pat[index].each do |el|
-        play_sound(el)
-      end
-      sleep [pat[:interval],pat[:size]-index].min
-    end
-  end
-end
-
-define :play_sound do |sound|
-  if map.has_key?(sound)
-    sample map[sound]
-  # else handle guitars    
-  end
-end
-
-play_loops loops2
+play_loops loops

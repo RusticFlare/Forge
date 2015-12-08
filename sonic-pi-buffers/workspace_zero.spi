@@ -1,8 +1,79 @@
-with_fx :bitcrusher do
-  live_loop :guitar do
-    play 63
-    sleep 1
-    play 69
-    sleep 1
+{
+  :drums1 => [:k, [:k, :c, [:c, :k], :c]],
+  :drums2 => [:k, [:c, :k]]
+}
+
+define :convert_hash do |hash|
+  loops = {}
+  hash.each do |key,val|
+    val.each do |el|
+      if el.is_a?(Array)
+        with_bpm_mul(el.size) do
+          play_thing el
+        end
+      else
+        sample map[el]
+        sleep 1
+      end
+    end
+  end
+end
+
+loops = {
+  :drum1 => [
+    {
+      :sounds => [:k],
+      :sleep => 2
+    }
+  ],
+  :drum2 => [
+    {
+      :sounds => [:s,:c],
+      :sleep => 1
+    },
+    {
+      :sounds => [:s],
+      :sleep => 1
+    },
+    {
+      :sounds => [:c],
+      :sleep => 1
+    },
+    {
+      :sounds => [:s],
+      :sleep => 1
+    }
+  ],
+  :drum3 => [
+    {
+      :sounds => [:et],
+      :sleep => 0.5
+    }
+  ]
+}
+
+map = { :k => :drum_heavy_kick, :s => :drum_snare_hard, :c => :drum_cymbal_closed, :et => :elec_tick}
+
+define :play_loops do |hash|
+  hash.each do |key,val|
+    play_thing(key,val)
+  end
+end
+
+define :play_thing do |name,pat|
+  live_loop name do
+    pat.each do |act|
+      act[:sounds].each do |el|
+        play_sound(el)
+      end
+      sleep act[:sleep]
+    end
+  end
+end
+
+define :play_sound do |sound|
+  if map.has_key?(sound)
+    sample map[sound]
+    # else handle guitars
   end
 end
