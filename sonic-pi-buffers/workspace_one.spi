@@ -1,8 +1,8 @@
 loops = {
   :drum1 => [
     {
-      :sounds => [],
-      :sleep => 0.5
+      :sounds => [:k],
+      :sleep => 4
     }
   ],
   :drum2 => [
