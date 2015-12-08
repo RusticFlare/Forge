@@ -1,9 +1,46 @@
-live_loop :a do
-  play 60
-  sleep 1
+define :string_eval do |str,sounds|
+  str = str.strip
+  if valid_string?(str)
+    if str.start_with?('[') && str.end_with?(']')
+      strs = split_list str
+      with_bpm_mul(strs.size) do
+        strs.each do |s|
+          sounds = string_eval(s,sounds)
+        end
+      end
+    else
+      strs = str.split(/\s+/)
+      strs.each_index do |i|
+        strs[i] = strs[i].to_sym
+      end
+      sounds << { :sounds => strs, :sleep => current_beat_duration}
+    end
+    return sounds
+  end
 end
 
-live_loop :b do
-  play 44
-  sleep 2
+define :split_list do |str|
+  str = str[1,str.length-2]
+  strs = str.split(/\s*,\s*/,-1)
+  strs.each_index do |i|
+    while !valid_string?(strs[i])
+      strs[i] << ',' << strs[i+1]
+      strs.delete_at(i+1)
+    end
+  end
+  return strs
+end
+
+define :valid_string? do |str|
+  stack = []
+  symbols = { '[' => ']', '(' => ')' }
+  str.each_char do |c|
+    if symbols.key?(c)
+      stack << c
+    end
+    if symbols.key(c) && symbols.key(c) != stack.pop
+      return false
+    end
+  end
+  stack.empty?
 end

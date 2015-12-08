@@ -1,1 +1,6 @@
-# Welcome to Sonic Pi v2.1.1
+define :a_test do
+  x = 'c(3,4)'
+  puts x.parameterize.underscore.to_sym === :c_3_4
+end
+
+a_test

@@ -1,24 +1,3 @@
-{
-  :drums1 => [:k, [:k, :c, [:c, :k], :c]],
-  :drums2 => [:k, [:c, :k]]
-}
-
-define :convert_hash do |hash|
-  loops = {}
-  hash.each do |key,val|
-    val.each do |el|
-      if el.is_a?(Array)
-        with_bpm_mul(el.size) do
-          play_thing el
-        end
-      else
-        sample map[el]
-        sleep 1
-      end
-    end
-  end
-end
-
 loops = {
   :drum1 => [
     {
