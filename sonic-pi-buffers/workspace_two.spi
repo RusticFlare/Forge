@@ -1,7 +1,8 @@
+# string_eval : (string, sounds) -> sounds
 define :string_eval do |str,sounds|
   str = str.strip
   if valid_string?(str)
-    if str.start_with?('[') && str.end_with?(']')
+    if is_array? str
       strs = split_list str
       with_bpm_mul(strs.size) do
         strs.each do |s|
@@ -11,14 +12,36 @@ define :string_eval do |str,sounds|
     else
       strs = str.split(/\s+/)
       strs.each_index do |i|
-        strs[i] = strs[i].to_sym
+        while !valid_string?(strs[i])
+          strs[i] << " " << strs[i+1]
+          strs.delete_at(i+1)
+        end
       end
-      sounds << { :sounds => strs, :sleep => current_beat_duration}
+      array_present = false
+      strs.each do |s|
+        if is_array? s
+          array_present = true
+        end
+      end
+      if array_present
+        strs = merge_arrays strs
+        with_bpm_mul(strs.size) do
+          strs.each do |s|
+            sounds = string_eval(s,sounds)
+          end
+        end
+      else
+        strs.each_index do |i|
+          strs[i] = strs[i].to_sym
+        end
+        sounds << { :sounds => strs, :sleep => current_beat_duration}
+      end
     end
     return sounds
   end
 end
 
+# split_list : string -> string array
 define :split_list do |str|
   str = str[1,str.length-2]
   strs = str.split(/\s*,\s*/,-1)
@@ -44,3 +67,69 @@ define :valid_string? do |str|
   end
   stack.empty?
 end
+
+define :is_array? do |str|
+  if !str.start_with?('[')
+    return false
+  end
+  stack = []
+  symbols = { '[' => ']' }
+  x = 0
+  str.each_char do |c|
+    x += 1
+    if symbols.key?(c)
+      stack << c
+    end
+    if symbols.key(c) && symbols.key(c) != stack.pop
+      return false
+    end
+    if stack.empty? && x != str.length
+      return false
+    end
+  end
+  stack.empty?
+end
+
+define :merge_arrays do |strs|
+  new_size = 1
+  strs.each_index do |i|
+    if !is_array? strs[i]
+      strs[i] = "[" + strs[i] + "]"
+    end
+    strs[i] = split_list strs[i]
+    new_size = new_size.lcm strs[i].length
+  end
+  sounds = Array.new(new_size)
+  strs.each do |str|
+    str.each_index do |i|
+      index = (i.to_r / str.length.to_r) * sounds.length
+      if sounds[index] == nil
+        sounds[index] = str[i]
+      else
+        sounds[index] << " " << str[i]
+      end
+    end
+  end
+  sounds.each_index do |i|
+    if sounds[i] == nil
+      sounds[i] = "x"
+    end
+  end
+  return sounds
+end
+
+puts(string_eval("k",[]) == string_eval("[k]",Array.new))
+puts(string_eval("[k]",[]) == [{:sounds=>[:k], :sleep=>1.0}])
+puts(string_eval("[k s]",[]) == [{:sounds=>[:k, :s], :sleep=>1.0}])
+puts(string_eval("[k, k] [s]",[]) == [{:sounds=>[:k, :s], :sleep=>0.5}, {:sounds=>[:k], :sleep=>0.5}])
+puts(string_eval("[k k] [s]",[]) == [{:sounds=>[:k, :k, :s], :sleep=>1.0}])
+puts(string_eval("[k, s]",[]) == [{:sounds=>[:k], :sleep=>0.5}, {:sounds=>[:s], :sleep=>0.5}])
+puts(string_eval("[k,k,k,k] [s,s]",[]) == [{:sounds=>[:k, :s], :sleep=>0.25}, {:sounds=>[:k], :sleep=>0.25}, {:sounds=>[:k, :s], :sleep=>0.25}, {:sounds=>[:k], :sleep=>0.25}])
+puts(string_eval("[k,k,k] [s,s]",[]) == [{:sounds=>[:k, :s], :sleep=>0.16666666666666666}, {:sounds=>[:x], :sleep=>0.16666666666666666}, {:sounds=>[:k], :sleep=>0.16666666666666666}, {:sounds=>[:s], :sleep=>0.16666666666666666}, {:sounds=>[:k], :sleep=>0.16666666666666666}, {:sounds=>[:x], :sleep=>0.16666666666666666}])
+
+puts(!is_array?(""))
+puts(is_array?("[]"))
+puts(!is_array?("[][]"))
+puts(!is_array?("[] []"))
+puts(is_array?("[[]]"))
+puts(!is_array?("[]()"))
