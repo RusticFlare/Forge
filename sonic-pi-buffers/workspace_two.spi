@@ -1,6 +1,6 @@
 # string_eval : (string, sounds) -> sounds
 define :string_eval do |str,sounds|
-  str = str.strip
+  str = string_convert str
   if valid_string?(str)
     if is_array? str
       strs = split_list str
@@ -10,13 +10,7 @@ define :string_eval do |str,sounds|
         end
       end
     else
-      strs = str.split(/\s+/)
-      strs.each_index do |i|
-        while !valid_string?(strs[i])
-          strs[i] << " " << strs[i+1]
-          strs.delete_at(i+1)
-        end
-      end
+      strs = split_concurrent str
       array_present = false
       strs.each do |s|
         if is_array? s
@@ -48,6 +42,17 @@ define :split_list do |str|
   strs.each_index do |i|
     while !valid_string?(strs[i])
       strs[i] << ',' << strs[i+1]
+      strs.delete_at(i+1)
+    end
+  end
+  return strs
+end
+
+define :split_concurrent do |str|
+  strs = str.split(/\s+/)
+  strs.each_index do |i|
+    while !valid_string?(strs[i])
+      strs[i] << " " << strs[i+1]
       strs.delete_at(i+1)
     end
   end
@@ -118,7 +123,52 @@ define :merge_arrays do |strs|
   return sounds
 end
 
+define :string_convert do |str|
+  str = space_input str
+  strs = str.split(/\*/)
+  while strs.length > 1
+    strs1 = strs[0].split(/\s+/)
+    symbol = ' ' + strs1.pop
+    while !valid_string? symbol
+      symbol = ' ' + strs1.pop + symbol
+    end
+
+    strs[0] = ""
+    strs1.each do |str1|
+      strs[0] = strs[0] + ' ' + str1
+    end
+
+    strs2 = strs[1].split(/\s+/,2)
+    head = strs2.shift
+    repeats = head.to_i
+    strs[1] = strs2[0] != nil ? strs2[0] : ""
+
+    arr = Array.new(repeats,symbol)
+    arr = arr.to_s
+    arr.gsub!(/\"/, '')
+
+    strs[0] = strs[0] + ' ' + arr  + ' ' + strs[1]
+    strs.delete_at 1
+  end
+  return strs[0].strip
+end
+
+define :space_input do |str|
+  str.gsub!(/\[|\]\*?|,/) do |s|
+    if s.end_with?("*")
+      ' ' + s
+    else
+      ' ' + s + ' '
+    end
+  end
+  return str
+end
+
+puts(string_convert("s*2*2") == "[ [ s, s],  [ s, s]]")
+puts(string_convert("s*2") == "[ s,  s]")
+
 puts(string_eval("k",[]) == string_eval("[k]",Array.new))
+puts(string_eval("k*2",[]) == [{:sounds=>[:k], :sleep=>0.5}, {:sounds=>[:k], :sleep=>0.5}])
 puts(string_eval("[k]",[]) == [{:sounds=>[:k], :sleep=>1.0}])
 puts(string_eval("[k s]",[]) == [{:sounds=>[:k, :s], :sleep=>1.0}])
 puts(string_eval("[k, k] [s]",[]) == [{:sounds=>[:k, :s], :sleep=>0.5}, {:sounds=>[:k], :sleep=>0.5}])
@@ -133,3 +183,9 @@ puts(!is_array?("[][]"))
 puts(!is_array?("[] []"))
 puts(is_array?("[[]]"))
 puts(!is_array?("[]()"))
+
+puts(get_valid_tail(" [ a b ] a") == " a")
+puts(get_valid_tail(" [ a b ] ") == " [ a b ]")
+puts(get_valid_tail(" [ k") == " k")
+
+puts(get_numeric_head("6 [ a b ] ") == 6)
