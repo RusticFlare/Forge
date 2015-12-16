@@ -154,18 +154,18 @@ define :string_convert do |str|
 end
 
 define :space_input do |str|
-  str.gsub!(/\[|\]\*?|,/) do |s|
-    if s.end_with?("*")
-      ' ' + s
-    else
-      ' ' + s + ' '
-    end
+  str.gsub!(/\[|\]|,|\(|\)/) do |s|
+    ' ' + s + ' '
   end
   return str
 end
 
+puts(string_convert("k(3,8)"))
+
 puts(string_convert("s*2*2") == "[ [ s, s],  [ s, s]]")
 puts(string_convert("s*2") == "[ s,  s]")
+puts(string_convert("s *2") == "[ s,  s]")
+puts(string_convert("[s k]*2") == "[ [ s k ],  [ s k ]]")
 
 puts(string_eval("k",[]) == string_eval("[k]",Array.new))
 puts(string_eval("k*2",[]) == [{:sounds=>[:k], :sleep=>0.5}, {:sounds=>[:k], :sleep=>0.5}])
@@ -183,9 +183,3 @@ puts(!is_array?("[][]"))
 puts(!is_array?("[] []"))
 puts(is_array?("[[]]"))
 puts(!is_array?("[]()"))
-
-puts(get_valid_tail(" [ a b ] a") == " a")
-puts(get_valid_tail(" [ a b ] ") == " [ a b ]")
-puts(get_valid_tail(" [ k") == " k")
-
-puts(get_numeric_head("6 [ a b ] ") == 6)
