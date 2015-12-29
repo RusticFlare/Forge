@@ -31,7 +31,7 @@ loops = {
   ]
 }
 
-map = { :k => :drum_heavy_kick, :s => :drum_snare_hard, :c => :drum_cymbal_closed, :et => :elec_tick}
+map = { :k => :drum_heavy_kick, :s => :drum_snare_hard, :c => :drum_cymbal_closed, :et => :elec_tick, :pc_d => :forge_d1_pc}
 
 define :play_loops do |hash|
   hash.each do |key,val|
@@ -43,16 +43,17 @@ define :play_thing do |name,pat|
   live_loop name do
     pat.each do |act|
       act[:sounds].each do |el|
-        play_sound(el)
+        play_sound(el,act[:sleep])
       end
       sleep act[:sleep]
     end
   end
 end
 
-define :play_sound do |sound|
+define :play_sound do |sound,cutoff|
   if map.has_key?(sound)
-    sample map[sound]
-    # else handle guitars
+    sample map[sound], sustain: 0, release: cutoff
+  elsif sound != :x
+    sample sound, sustain: 0, release: cutoff
   end
 end

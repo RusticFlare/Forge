@@ -7,4 +7,13 @@ define :forge do |hash|
   play_loops anvil
 end
 
-forge({ :the_noise => "[k, k s]" })
+# sample :
+
+with_fx :reverb do
+  with_fx :distortion, distort: 0.6 do
+    with_fx :flanger do
+      forge({ :the_axe => "loop_industrial",
+              :the_noise => "forge_f1_pc" })
+    end
+  end
+end
