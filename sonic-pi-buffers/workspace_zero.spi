@@ -51,7 +51,9 @@ define :play_thing do |name,pat|
 end
 
 define :play_sound do |sound,cutoff|
-  if map.has_key?(sound)
+  if sound.is_a? Float
+    play sound
+  elsif map.has_key?(sound)
     sample map[sound], sustain: 0, release: cutoff
   elsif sound != :x
     sample sound, sustain: 0, release: cutoff

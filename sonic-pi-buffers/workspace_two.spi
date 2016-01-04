@@ -26,7 +26,11 @@ define :string_eval do |str,sounds|
         end
       else
         strs.each_index do |i|
-          strs[i] = strs[i].to_sym
+          if strs[i] =~ /\A[-+]?[0-9]*\.?[0-9]+\Z/ # is numeric
+            strs[i] = strs[i].to_f
+          else
+            strs[i] = strs[i].to_sym
+          end
         end
         sounds << { :sounds => strs, :sleep => current_beat_duration}
       end
@@ -203,6 +207,7 @@ define :format_input do |str|
   return str.gsub(/\s\s+/," ").strip
 end
 
+puts(string_convert("2*2") == "[ 2 , 2 ]")
 puts(string_convert("[k(5,8)]") == "[ [ k , x , k , x , k , k , x , k ] ]")
 puts(string_convert("[k*2(3,8)]") == "[ [ [ k , k ] , x , x , [ k , k ] , x , x , [ k , k ] , x ] ]")
 puts(string_convert("s*2*2") == "[ [ s , s ] , [ s , s ] ]")
@@ -222,6 +227,7 @@ puts(string_eval("[k k] [s]",[]) == [{:sounds=>[:k, :k, :s], :sleep=>1.0}])
 puts(string_eval("[k, s]",[]) == [{:sounds=>[:k], :sleep=>0.5}, {:sounds=>[:s], :sleep=>0.5}])
 puts(string_eval("[k,k,k,k] [s,s]",[]) == [{:sounds=>[:k, :s], :sleep=>0.25}, {:sounds=>[:k], :sleep=>0.25}, {:sounds=>[:k, :s], :sleep=>0.25}, {:sounds=>[:k], :sleep=>0.25}])
 puts(string_eval("[k,k,k] [s,s]",[]) == [{:sounds=>[:k, :s], :sleep=>0.16666666666666666}, {:sounds=>[:x], :sleep=>0.16666666666666666}, {:sounds=>[:k], :sleep=>0.16666666666666666}, {:sounds=>[:s], :sleep=>0.16666666666666666}, {:sounds=>[:k], :sleep=>0.16666666666666666}, {:sounds=>[:x], :sleep=>0.16666666666666666}])
+puts(string_eval("2*2",[]) == [{:sounds=>[2.0], :sleep=>0.5}, {:sounds=>[2.0], :sleep=>0.5}])
 
 puts(!is_array?(""))
 puts(is_array?("[]"))
