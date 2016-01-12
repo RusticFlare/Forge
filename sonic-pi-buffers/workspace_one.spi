@@ -9,11 +9,5 @@ end
 
 # sample :
 
-with_fx :reverb do
-  with_fx :distortion, distort: 0.6 do
-    with_fx :flanger do
-      forge({ :the_axe => "loop_industrial",
-              :the_noise => "forge_f1_pc" })
-    end
-  end
-end
+forge({ :the_axe => "[forge_c1_sn, 50, 54]",
+        :the_drums => "x"})
