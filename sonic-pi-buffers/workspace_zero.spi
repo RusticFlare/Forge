@@ -40,19 +40,26 @@ define :play_loops do |hash|
 end
 
 define :play_thing do |name,pat|
-  live_loop name do
-    pat.each do |act|
-      act[:sounds].each do |el|
-        play_sound(el,act[:sleep])
+  with_fx :reverb, room: 0.9 do
+    with_fx :distortion, distort: 0.9 do
+      with_fx :flanger, feedback: 0.2 do
+        live_loop name do
+          use_synth :piano
+          pat.each do |act|
+            act[:sounds].each do |el|
+              play_sound(el,act[:sleep])
+            end
+            sleep act[:sleep]
+          end
+        end
       end
-      sleep act[:sleep]
     end
   end
 end
 
 define :play_sound do |sound,cutoff|
   if sound.is_a? Float
-    play sound
+    play sound, vel: 0.16, hard: 0.39
   elsif map.has_key?(sound)
     sample map[sound], sustain: 0, release: cutoff
   elsif sound != :x

@@ -1,11 +1,22 @@
 with_fx :reverb do
-  with_fx :distortion, distort: 0.5 do
+  with_fx :distortion, distort: 0.6 do
     with_fx :flanger do
       3.times do
         use_synth :tri
-        play (chord :e3, :minor), release: 0.5
-        sleep 0.6
+        play 52
+        sleep 1
       end
     end
   end
+end
+
+3.times do
+  use_synth :tri
+  play 52
+  sleep 1
+end
+
+3.times do
+  sample :forge_a1_sn
+  sleep 1
 end

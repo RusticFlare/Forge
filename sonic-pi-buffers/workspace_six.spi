@@ -1,1 +1,27 @@
-puts (spread 3, 8)
+with_fx :reverb, room: 0.8 do
+  with_fx :distortion, distort: 0.8 do
+    with_fx :flanger do
+      3.times do
+        sample :forge_a1_sn
+        sleep 1
+      end
+    end
+  end
+end
+
+with_fx :reverb, room: 0.9 do
+  with_fx :distortion, distort: 0.9 do
+    with_fx :flanger, feedback: 0.2 do
+      3.times do
+        use_synth :piano
+        play :a2, vel: 0.16, hard: 0.39
+        sleep 1
+      end
+      3.times do
+        use_synth :piano
+        play :a2, vel: 0.175
+        sleep 1
+      end
+    end
+  end
+end
