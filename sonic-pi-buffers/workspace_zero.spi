@@ -1,36 +1,3 @@
-loops = {
-  :drum1 => [
-    {
-      :sounds => [:k],
-      :sleep => 2
-    }
-  ],
-  :drum2 => [
-    {
-      :sounds => [:s,:c],
-      :sleep => 1
-    },
-    {
-      :sounds => [:s],
-      :sleep => 1
-    },
-    {
-      :sounds => [:c],
-      :sleep => 1
-    },
-    {
-      :sounds => [:s],
-      :sleep => 1
-    }
-  ],
-  :drum3 => [
-    {
-      :sounds => [:et],
-      :sleep => 0.5
-    }
-  ]
-}
-
 map = { :k => :drum_heavy_kick, :s => :drum_snare_hard, :c => :drum_cymbal_closed, :et => :elec_tick, :pc_d => :forge_d1_pc}
 
 define :play_loops do |hash|
@@ -59,10 +26,228 @@ end
 
 define :play_sound do |sound,cutoff|
   if sound.is_a? Float
-    play sound, vel: 0.16, hard: 0.39
+    play sound, vel: 0.16, hard: 0.39, release: cutoff
   elsif map.has_key?(sound)
     sample map[sound], sustain: 0, release: cutoff
   elsif sound != :x
     sample sound, sustain: 0, release: cutoff
   end
+end
+
+# string_eval : (string, sounds) -> sounds
+define :string_eval do |str,sounds|
+  str = string_convert str
+  if valid_string?(str)
+    if is_array? str
+      strs = split_list str
+      with_bpm_mul(strs.size) do
+        strs.each do |s|
+          sounds = string_eval(s,sounds)
+        end
+      end
+    else
+      strs = split_concurrent str
+      array_present = false
+      strs.each do |s|
+        if is_array? s
+          array_present = true
+        end
+      end
+      if array_present
+        strs = merge_arrays strs
+        with_bpm_mul(strs.size) do
+          strs.each do |s|
+            sounds = string_eval(s,sounds)
+          end
+        end
+      else
+        strs.each_index do |i|
+          if strs[i] =~ /\A[-+]?[0-9]*\.?[0-9]+\Z/ # is numeric
+            strs[i] = strs[i].to_f
+          else
+            strs[i] = strs[i].to_sym
+          end
+        end
+        sounds << { :sounds => strs, :sleep => current_beat_duration}
+      end
+    end
+    return sounds
+  end
+end
+
+# split_list : string -> string array
+define :split_list do |str|
+  str = str[1,str.length-2]
+  strs = str.split(/\s*,\s*/,-1)
+  strs.each_index do |i|
+    while !valid_string?(strs[i])
+      strs[i] << ',' << strs[i+1]
+      strs.delete_at(i+1)
+    end
+  end
+  return strs
+end
+
+define :split_concurrent do |str|
+  strs = str.split(/\s+/)
+  strs.each_index do |i|
+    while !valid_string?(strs[i])
+      strs[i] << " " << strs[i+1]
+      strs.delete_at(i+1)
+    end
+  end
+  return strs
+end
+
+define :valid_string? do |str|
+  stack = []
+  symbols = { '[' => ']', '(' => ')' }
+  str.each_char do |c|
+    if symbols.key?(c)
+      stack << c
+    end
+    if symbols.key(c) && symbols.key(c) != stack.pop
+      return false
+    end
+  end
+  stack.empty?
+end
+
+define :is_array? do |str|
+  if !str.start_with?('[')
+    return false
+  end
+  stack = []
+  symbols = { '[' => ']' }
+  x = 0
+  str.each_char do |c|
+    x += 1
+    if symbols.key?(c)
+      stack << c
+    end
+    if symbols.key(c) && symbols.key(c) != stack.pop
+      return false
+    end
+    if stack.empty? && x != str.length
+      return false
+    end
+  end
+  stack.empty?
+end
+
+define :merge_arrays do |strs|
+  new_size = 1
+  strs.each_index do |i|
+    if !is_array? strs[i]
+      strs[i] = "[" + strs[i] + "]"
+    end
+    strs[i] = split_list strs[i]
+    new_size = new_size.lcm strs[i].length
+  end
+  sounds = Array.new(new_size)
+  strs.each do |str|
+    str.each_index do |i|
+      index = (i.to_r / str.length.to_r) * sounds.length
+      if sounds[index] == nil
+        sounds[index] = str[i]
+      else
+        sounds[index] << " " << str[i]
+      end
+    end
+  end
+  sounds.each_index do |i|
+    if sounds[i] == nil
+      sounds[i] = "x"
+    end
+  end
+  return sounds
+end
+
+define :string_convert do |str|
+  str = mult_values str
+  return spread_values str
+end
+
+define :spread_values do |str|
+  str = format_input str
+  strs = str.split(/\(|\)/,-1)
+  while strs.length > 2
+    strs1 = strs[0].split(/\s+/)
+    symbol = ' ' + strs1.pop
+    while !valid_string? symbol
+      symbol = ' ' + strs1.pop + symbol
+    end
+
+    strs[0] = ""
+    strs1.each do |str1|
+      strs[0] = strs[0] + ' ' + str1
+    end
+
+    if !(strs[1] =~ /\A\s*\d+\s*,\s*\d+\s*\Z/).nil?
+      vals = strs[1].scan(/\d+/)
+    end
+    vals.each_index do |i|
+      vals[i] = vals[i].to_i
+    end
+
+    sprd = spread(vals[0], vals[1])
+    arr = Array.new(vals[1], "x")
+    arr.each_index do |i|
+      if sprd[i]
+        arr[i] = symbol
+      end
+    end
+    arr = arr.to_s
+    arr.gsub!(/\"/, '')
+    strs[0] = strs[0] + ' ' + arr  + ' ' + strs[2]
+    strs.delete_at 1
+    strs.delete_at 2
+  end
+  return format_input strs[0]
+end
+
+define :mult_values do |str|
+  str = format_input str
+  strs = str.split(/\s*\*\s*/)
+  while strs.length > 1
+    strs1 = strs[0].split(/\s+/)
+    symbol = ' ' + strs1.pop
+    while !valid_string? symbol
+      symbol = ' ' + strs1.pop + symbol
+    end
+
+    strs[0] = ""
+    strs1.each do |str1|
+      strs[0] = strs[0] + ' ' + str1
+    end
+
+    strs2 = strs[1].split(/\s+/,2)
+    head = strs2.shift
+    repeats = head.to_i
+    strs[1] = strs2[0] != nil ? strs2[0] : ""
+
+    arr = Array.new(repeats,symbol)
+    arr = arr.to_s
+    arr.gsub!(/\"/, '')
+
+    strs[0] = strs[0] + ' ' + arr  + ' ' + strs[1]
+    strs.delete_at 1
+  end
+  return format_input strs[0]
+end
+
+define :format_input do |str|
+  str.gsub!(/\[|\]|,|\(|\)/) do |s|
+    ' ' + s + ' '
+  end
+  return str.gsub(/\s\s+/," ").strip
+end
+
+anvil = Hash.new
+
+define :forge do |hash|
+  hash.each do |key,val|
+    anvil[key] = string_eval(val,[])
+  end
+  play_loops anvil
 end

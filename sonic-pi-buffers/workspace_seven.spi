@@ -1,4 +1,4 @@
-define :is_valid_music_hash? do |hash|
+define :is_valid_anvil? do |hash|
   if hash.is_a?(Hash)
     hash.each do |key,val|
       if key.is_a?(Symbol) && val.is_a?(Array)
@@ -48,4 +48,4 @@ loops1 = {
   ]
 }
 
-puts(is_valid_music_hash? loops1)
+puts(is_valid_anvil? loops1)
