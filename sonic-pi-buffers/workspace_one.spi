@@ -1,13 +1,4 @@
-anvil = Hash.new
+#sample :forge_f2_pc
 
-define :forge do |hash|
-  hash.each do |key,val|
-    anvil[key] = string_eval(val,[])
-  end
-  play_loops anvil
-end
-
-# sample :
-
-forge({ :the_axe => "[forge_c1_sn, 50, 54]",
-        :the_drums => "x"})
+forge({ :the_axe => "[45 49(3,4),forge_d1_pc(2,3)]",
+        :the_drums => "k(3,4)"})
