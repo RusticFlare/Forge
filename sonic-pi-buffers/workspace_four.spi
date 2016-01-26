@@ -1,0 +1,47 @@
+with_bpm 120 do
+  with_fx :reverb, room: 0.9 do
+    with_fx :distortion, distort: 0.9 do
+      with_fx :flanger, feedback: 0.5 do
+        use_synth :piano
+        play :d3
+        play :g3
+        sleep 1
+        play :f3
+        play :bb3
+        sleep 1
+        play :g3, release: 1.5
+        play :c4, release: 1.5
+        sleep 1.5
+
+        play :d3
+        play :g3
+        sleep 1
+        play :f3
+        play :bb3
+        sleep 1
+        play :ab3, release: 0.5
+        play :cs4, release: 0.5
+        sleep 0.5
+        play :g3, release: 2
+        play :c4, release: 2
+        sleep 2
+
+        play :d3
+        play :g3
+        sleep 1
+        play :f3
+        play :bb3
+        sleep 1
+        play :g3, release: 1.5
+        play :c4, release: 1.5
+        sleep 1.5
+        play :f3
+        play :bb3
+        sleep 1
+        play :d3, release: 3
+        play :g3, release: 3
+        sleep 3
+      end
+    end
+  end
+end

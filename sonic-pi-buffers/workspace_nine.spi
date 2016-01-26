@@ -1,1 +1,35 @@
-sample :forge_pc_d
+with_bpm 120 do
+  with_fx :reverb, room: 0.9 do
+    with_fx :distortion, distort: 0.4 do
+      with_fx :flanger, feedback: 0.2 do
+        sample :forge_g1, sustain: 0, release: 1
+        sleep 1
+        sample :forge_bb1, sustain: 0, release: 1
+        sleep 1
+        sample :forge_c2, sustain: 0, release: 1.5
+        sleep 1.5
+
+        sample :forge_g1, sustain: 0, release: 1
+        sleep 1
+        sample :forge_bb1, sustain: 0, release: 1
+        sleep 1
+        sample :forge_cs2, sustain: 0, release: 0.5
+        sleep 0.5
+        sample :forge_c2, sustain: 0, release: 2
+        sleep 2
+
+        sample :forge_g1, sustain: 0, release: 1
+        sleep 1
+        sample :forge_bb1, sustain: 0, release: 1
+        sleep 1
+        sample :forge_c2, sustain: 0, release: 1.5
+        sleep 1.5
+
+        sample :forge_bb1, sustain: 0, release: 1
+        sleep 1
+        sample :forge_g1, sustain: 0, release: 2
+        sleep 2
+      end
+    end
+  end
+end

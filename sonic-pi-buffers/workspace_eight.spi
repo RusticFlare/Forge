@@ -1,6 +1,14 @@
-define :a_test do
-  x = 'c(3,4)'
-  puts x.parameterize.underscore.to_sym === :c_3_4
+1.times do
+  sample :forge_e1, release: 3, sustain: 0
+  sleep 4
 end
 
-a_test
+with_fx :reverb, room: 0.2 do
+  with_fx :distortion, distort: 0.8 do
+    1.times do
+      use_synth :piano
+      play :e1, vel: 0.4, hard: 0.2, release: 3
+      sleep 3
+    end
+  end
+end
