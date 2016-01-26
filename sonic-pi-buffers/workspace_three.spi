@@ -1,3 +1,14 @@
-puts vt
-sleep 1
-puts vt
+require 'treetop'
+Treetop.load 'PATH_TO/grammar/my_grammar.tt'
+# or just:
+# require 'my_grammar'                     # This works because Polyglot hooks "require" to find and load Treetop files
+
+parser = MyGrammarParser.new
+result = parser.parse('{a b,67}')
+
+if !result
+  puts parser.failure_reason
+else
+  puts result.elements
+  puts result.content
+end
