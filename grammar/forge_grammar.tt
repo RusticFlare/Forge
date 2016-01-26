@@ -1,0 +1,137 @@
+grammar ForgeGrammar
+
+  rule list
+    expr ' ' list {
+      def content
+       [elements[0].content] + elements[2].content
+      end
+    }
+    /
+    expr 1..1 {
+      def content
+        [elements[0].content]
+      end
+    }
+  end
+  
+  rule expr
+    elemt mods {
+      def content
+        elements[0].content + [elements[1].content]
+      end
+    }
+    /
+    elemt 1..1 {
+      def content
+        elements[0].content
+      end
+    }
+  end
+  
+  rule elemt
+    "[" array "]" {
+      def content
+        [:s_array, elements[1].content]
+      end
+    }
+    /
+    "{" array "}" {
+      def content
+        [:c_array, elements[1].content]
+      end
+    }
+    /
+    float !word {
+      def content
+        [:float, elements[0].content]
+      end
+    }
+    /
+    word 1..1 {
+      def content
+        [:word, elements[0].content]
+      end
+    }
+  end
+  
+  rule mods
+    mod mods {
+      def content
+        [elements[0].content] + elements[1].content
+      end
+    }
+    /
+    mod 1..1 {
+      def content
+        [elements[0].content]
+      end
+    }
+  end
+  
+  rule mod
+    '*' nat {
+      def content
+        [:mult, elements[1].content]
+      end
+    }
+    /
+    '/' float {
+      def content
+        [:div, elements[1].content]
+      end
+    }
+    /
+    '(' nat ',' nat ')' {
+      def content
+        [:spread, elements[1].content, elements[3].content]
+      end
+    }
+  end
+
+	rule array
+    list ',' array {
+      def content
+        [elements[0].content] + elements[2].content
+      end
+    }
+    /
+    list 1..1 {
+      def content
+        [elements[0].content]
+      end
+    }
+  end
+  
+  rule word
+    [a-zA-Z0-9_]+ {
+      def content
+        text_value
+      end
+    }
+  end
+  
+  rule nat
+    [0-9]+ {
+      def content
+        text_value.to_i
+      end
+    }
+  end
+  
+  rule float
+    nat '.' nat {
+      def content
+        text_value.to_f
+      end
+    }
+    /
+    nat {
+      def content
+        text_value.to_f
+      end
+    }
+  end
+  
+  
+
+end
