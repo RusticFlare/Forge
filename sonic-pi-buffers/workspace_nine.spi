@@ -1,35 +1,104 @@
-with_bpm 120 do
-  with_fx :reverb, room: 0.9 do
-    with_fx :distortion, distort: 0.4 do
-      with_fx :flanger, feedback: 0.2 do
-        sample :forge_g1, sustain: 0, release: 1
-        sleep 1
-        sample :forge_bb1, sustain: 0, release: 1
-        sleep 1
-        sample :forge_c2, sustain: 0, release: 1.5
-        sleep 1.5
+anvil_1 = nil
+# list anvil
+anvil_11 =
+{
+  :name => :list,
+  :size => 2,
+  :sounds => [ {
+                 :name => :sym,
+                 :sound => :drum_heavy_kick
+               },{
+                 :name => :sym,
+                 :sound => :drum_heavy_kick
+  } ].ring
+}
+anvil_12 =
+{
+  :name => :list,
+  :size => 1,
+  :sounds => [ {
+                 :name => :note,
+                 :sound => 52
+  } ].ring
+}
 
-        sample :forge_g1, sustain: 0, release: 1
-        sleep 1
-        sample :forge_bb1, sustain: 0, release: 1
-        sleep 1
-        sample :forge_cs2, sustain: 0, release: 0.5
-        sleep 0.5
-        sample :forge_c2, sustain: 0, release: 2
-        sleep 2
+# square_bracket anvil
+{
+  :name => :square_bracket,
+  :sounds => [ anvil_11, anvil_12 ]
+}
 
-        sample :forge_g1, sustain: 0, release: 1
-        sleep 1
-        sample :forge_bb1, sustain: 0, release: 1
-        sleep 1
-        sample :forge_c2, sustain: 0, release: 1.5
-        sleep 1.5
+# curly_bracket anvil
+anvil_2 =
+{
+  :name => :curly_bracket,
+  :steps => 2,
+  :index => 0,
+  :sounds => [ anvil_11, anvil_12 ]
+}
 
-        sample :forge_bb1, sustain: 0, release: 1
-        sleep 1
-        sample :forge_g1, sustain: 0, release: 2
-        sleep 2
-      end
+# note anvil
+{
+  :name => :note,
+  :sound => 52,
+  :release => 1
+}
+
+# sym anvil
+{
+  :name => :sym,
+  :sound => :drum_heavy_kick,
+  :release => 1
+}
+
+# nil anvil
+{
+  :name => nil
+}
+define :play_anvil_list do |list,steps,index|
+  with_bpm_mul(steps) do
+    steps.times do
+      play_anvil list[:sounds][index]
+      index = index + 1
     end
   end
 end
+
+define :play_anvil do |anvil|
+  case anvil[:name]
+  when :sym
+    sample anvil[:sound]
+    sleep 1
+  when :note
+    play anvil[:sound]
+    sleep 1
+  when :list
+    play_anvil_list anvil, anvil[:size], 0
+  when :square_bracket
+    anvil[:sounds].each do |list|
+      in_thread do
+        play_anvil list
+      end
+    end
+    sleep 1
+  when :curly_bracket
+    anvil[:sounds].each do |list|
+      in_thread do
+        play_anvil_list list, anvil[:steps], anvil[:index]
+      end
+    end
+    anvil[:index] = anvil[:index] + anvil[:steps]
+    sleep 1
+  else
+    sleep 1
+  end
+end
+
+anvil_3 =
+{
+  :name => :list,
+  :size => 1,
+  :sounds => [ anvil_2 ].ring
+}
+
+play_anvil anvil_3

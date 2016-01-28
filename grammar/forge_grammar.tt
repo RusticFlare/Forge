@@ -1,5 +1,13 @@
 grammar ForgeGrammar
 
+  rule forge
+    list 1..1 {
+      def content
+        [:list, elements[0].content]
+      end
+    }
+  end
+
   rule list
     expr ' ' list {
       def content
@@ -23,7 +31,7 @@ grammar ForgeGrammar
     /
     elemt 1..1 {
       def content
-        elements[0].content
+        elements[0].content + [[]]
       end
     }
   end
@@ -50,6 +58,12 @@ grammar ForgeGrammar
     word 1..1 {
       def content
         [:word, elements[0].content]
+      end
+    }
+    /
+    sym 1..1 {
+      def content
+        [:sym, elements[0].content]
       end
     }
   end
@@ -89,13 +103,13 @@ grammar ForgeGrammar
   end
 
 	rule array
-    list ',' array {
+    forge ',' array {
       def content
         [elements[0].content] + elements[2].content
       end
     }
     /
-    list 1..1 {
+    forge 1..1 {
       def content
         [elements[0].content]
       end
@@ -132,6 +146,12 @@ grammar ForgeGrammar
     }
   end
   
-  
+  rule sym
+    ':' word  {
+      def content
+        elements[1].content.parameterize.underscore.to_sym
+      end
+    }
+  end
 
 end
