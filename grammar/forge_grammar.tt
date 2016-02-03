@@ -3,7 +3,7 @@ grammar ForgeGrammar
   rule forge
     list 1..1 {
       def content
-        { :name => :list , :content => elements[0].content }
+        { :name => :list , :content => elements[0].content.ring }
       end
     }
   end
@@ -11,13 +11,13 @@ grammar ForgeGrammar
   rule list
     expr ' ' list {
       def content
-       [elements[0].content] + elements[2].content
+       elements[0].content + elements[2].content
       end
     }
     /
     expr 1..1 {
       def content
-        [elements[0].content]
+        elements[0].content
       end
     }
   end
@@ -25,13 +25,13 @@ grammar ForgeGrammar
   rule expr
     elemt mods {
       def content
-        elements[0].content.merge({ :mods => elements[1].content })
+        [elements[0].content.merge({ :mods => elements[1].content })]
       end
     }
     /
     elemt 1..1 {
       def content
-        elements[0].content.merge({ :mods => [] })
+        [elements[0].content.merge({ :mods => [] })]
       end
     }
   end
@@ -39,19 +39,19 @@ grammar ForgeGrammar
   rule elemt
     "[" array "]" {
       def content
-        { :name => :s_array , :content => elements[1].content }
+        { :name => :square_bracket , :content => elements[1].content }
       end
     }
     /
     "{" array "}" {
       def content
-        { :name => :c_array , :content => elements[1].content }
+        { :name => :curly_bracket , :content => elements[1].content , :index => 0 }
       end
     }
     /
     float !word {
       def content
-        { :name => :float , :content => elements[0].content }
+        { :name => :note , :content => elements[0].content }
       end
     }
     /

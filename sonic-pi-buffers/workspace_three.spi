@@ -2,11 +2,60 @@ require 'treetop'
 Treetop.load 'PATH_TO/grammar/forge_grammar.tt'
 
 parser = ForgeGrammarParser.new
-result = parser.parse('1soo_*2*4/6(4,5)')
+result = parser.parse('{60*3,59 57}')
 
 if !result
   puts parser.failure_reason
 else
-  puts result.elements
+  #puts result.elements
   puts result.content
 end
+
+define :ring_to_array do |ring|
+  puts ring
+  a = []
+  ring.each do |e|
+    a << e
+  end
+  a
+end
+
+define :apply_mods do |anvil|
+  case anvil[:name]
+  when :list
+    anvil[:content].each do |element|
+      apply_mods element
+    end
+    anvil[:content].each_index do |list_index|
+      element = anvil[:content][list_index]
+      element[:mods].each_index do |mod_index|
+        mod = element[:mods][mod_index]
+        case mod[:name]
+        when :mult
+          repeats = mod[:content]
+          a = ring_to_array anvil[:content]
+          element[:mods].delete_at mod_index
+          a.delete_at list_index
+          repeats.times do
+            el = element.dup
+            el[:mods] = element[:mods].dup
+            a.insert list_index, el
+          end
+          anvil[:content] = a.ring
+
+          apply_mods anvil
+        end
+      end
+    end
+  when :square_bracket, :curly_bracket
+    anvil[:content].map do |list|
+      apply_mods list
+    end
+  end
+end
+
+anvil = result.content
+apply_mods anvil
+puts anvil
+
+play_anvil anvil

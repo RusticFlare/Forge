@@ -3,29 +3,27 @@ anvil_1 = nil
 anvil_11 =
 {
   :name => :list,
-  :size => 2,
-  :sounds => [ {
-                 :name => :sym,
-                 :sound => :drum_heavy_kick
-               },{
-                 :name => :sym,
-                 :sound => :drum_heavy_kick
+  :content => [ {
+                  :name => :sym,
+                  :content => :drum_heavy_kick
+                },{
+                  :name => :sym,
+                  :content => :drum_heavy_kick
   } ].ring
 }
 anvil_12 =
 {
   :name => :list,
-  :size => 1,
-  :sounds => [ {
-                 :name => :note,
-                 :sound => 52
+  :content => [ {
+                  :name => :note,
+                  :content => 52
   } ].ring
 }
 
 # square_bracket anvil
 {
   :name => :square_bracket,
-  :sounds => [ anvil_11, anvil_12 ]
+  :content => [ anvil_11, anvil_12 ]
 }
 
 # curly_bracket anvil
@@ -34,21 +32,19 @@ anvil_2 =
   :name => :curly_bracket,
   :steps => 2,
   :index => 0,
-  :sounds => [ anvil_11, anvil_12 ]
+  :content => [ anvil_11, anvil_12 ]
 }
 
 # note anvil
 {
   :name => :note,
-  :sound => 52,
-  :release => 1
+  :content => 52
 }
 
 # sym anvil
 {
   :name => :sym,
-  :sound => :drum_heavy_kick,
-  :release => 1
+  :content => :drum_heavy_kick
 }
 
 # nil anvil
@@ -58,7 +54,7 @@ anvil_2 =
 define :play_anvil_list do |list,steps,index|
   with_bpm_mul(steps) do
     steps.times do
-      play_anvil list[:sounds][index]
+      play_anvil list[:content][index]
       index = index + 1
     end
   end
@@ -67,27 +63,28 @@ end
 define :play_anvil do |anvil|
   case anvil[:name]
   when :sym
-    sample anvil[:sound]
+    sample anvil[:content]
     sleep 1
   when :note
-    play anvil[:sound]
+    play anvil[:content]
     sleep 1
   when :list
-    play_anvil_list anvil, anvil[:size], 0
+    play_anvil_list anvil, anvil[:content].length, 0
   when :square_bracket
-    anvil[:sounds].each do |list|
+    anvil[:content].each do |list|
       in_thread do
         play_anvil list
       end
     end
     sleep 1
   when :curly_bracket
-    anvil[:sounds].each do |list|
+    steps = anvil[:content][0][:content].length
+    anvil[:content].each do |list|
       in_thread do
-        play_anvil_list list, anvil[:steps], anvil[:index]
+        play_anvil_list list, steps, anvil[:index]
       end
     end
-    anvil[:index] = anvil[:index] + anvil[:steps]
+    anvil[:index] = anvil[:index] + steps
     sleep 1
   else
     sleep 1
@@ -98,7 +95,7 @@ anvil_3 =
 {
   :name => :list,
   :size => 1,
-  :sounds => [ anvil_2 ].ring
+  :content => [ anvil_2 ].ring
 }
 
 play_anvil anvil_3
