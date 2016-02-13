@@ -1,15 +1,15 @@
 grammar ForgeGrammar
 
   rule forge
-    list 1..1 {
+    pos_ws list pos_ws {
       def content
-        { :name => :list , :content => elements[0].content.ring }
+        { :name => :list , :content => elements[1].content.ring }
       end
     }
   end
 
   rule list
-    expr ' ' list {
+    expr def_ws list {
       def content
        elements[0].content + elements[2].content
       end
@@ -37,15 +37,15 @@ grammar ForgeGrammar
   end
   
   rule elemt
-    "[" array "]" {
+    "[" pos_ws array pos_ws "]" {
       def content
-        { :name => :square_bracket , :content => elements[1].content }
+        { :name => :square_bracket , :content => elements[2].content }
       end
     }
     /
-    "{" array "}" {
+    "{" pos_ws array pos_ws "}" {
       def content
-        { :name => :curly_bracket , :content => elements[1].content , :index => 0 }
+        { :name => :curly_bracket , :content => elements[2].content , :index => 0 }
       end
     }
     /
@@ -101,15 +101,15 @@ grammar ForgeGrammar
       end
     }
     /
-    '(' nat ',' nat ')' {
+    '(' pos_ws nat comma nat pos_ws ')' {
       def content
-        { :name => :spread , :content => { :ammount => elements[1].content , :per => elements[3].content } }
+        { :name => :spread , :content => { :ammount => elements[2].content , :per => elements[4].content } }
       end
     }
   end
 
 	rule array
-    forge ',' array {
+    forge comma array {
       def content
         [elements[0].content] + elements[2].content
       end
@@ -162,6 +162,22 @@ grammar ForgeGrammar
   
   rule silence
     '~'
+  end
+  
+  rule pos_ws
+    ws*
+  end
+  
+  rule def_ws
+    ws+
+  end
+  
+  rule ws
+    [\s\t\r\n]
+  end
+  
+  rule comma
+    pos_ws ',' pos_ws
   end
 
 end
