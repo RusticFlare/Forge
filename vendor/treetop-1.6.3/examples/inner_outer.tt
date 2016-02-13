@@ -1,0 +1,14 @@
+grammar InnerOuter
+  rule inner_outer
+    ( "foo"
+      {
+	def inner
+	end
+      }
+    )
+    {
+      def outer
+      end
+    } 
+  end
+end

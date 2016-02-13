@@ -1,0 +1,21 @@
+grammar Numerals
+  rule percentage
+    (decimal "%") {
+      def to_f
+        decimal.to_f / 100
+      end
+    }
+  end
+
+  rule decimal
+    sign [0-9]+ '.' [0-9]* {
+      def to_f
+        text_value.to_f
+      end
+    }
+  end
+
+  rule sign
+    ('+'/'-')? 
+  end
+end
