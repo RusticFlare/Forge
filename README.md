@@ -20,7 +20,7 @@ forge({ :drums => "[k, s]" }) # Arrayed items are played simultaneously
 ```
 * These can be combined in anyway
 ```ruby
-forge({ :drums => "[k, k, k, k] [s, [s, s]]" })
+forge({ :drums => "[k k k k] [s [s s]]" })
 ```
 * `~` can be used for silence
 ```ruby
