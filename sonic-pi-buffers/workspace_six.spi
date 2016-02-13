@@ -18,7 +18,7 @@ define :apply_mods_2 do |anvil|
   end
 end
 
-anvil = parser.parse("1(3,5)").content
+anvil = parser.parse("1/2 2").content
 puts anvil
-apply_mods_2 anvil
+apply_mods anvil
 puts anvil
