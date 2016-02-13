@@ -123,8 +123,11 @@ define :apply_divs do |list|
       mod = el[:mods][mod_i]
       case mod[:name]
       when :div
+        div = mod[:content]
         el[:mods].delete_at mod_i
+        div.times do
         a.insert list_i + 1, { :name => :silence, :mods => [] }
+          end
       end
     end
   end
