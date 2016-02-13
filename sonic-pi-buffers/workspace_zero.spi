@@ -30,10 +30,11 @@ define :play_data_structure do |anvil|
     end
     sleep 1
   when :curly_bracket
+    index = anvil[:index]
     steps = anvil[:content][0][:content].length
     anvil[:content].each do |list|
       in_thread do
-        play_anvil_list list, steps, anvil[:index]
+        play_anvil_list list, steps, index
       end
     end
     anvil[:index] = anvil[:index] + steps
@@ -66,7 +67,6 @@ define :apply_mods do |anvil|
     end
     anvil[:content].each_index do |list_index|
       element = anvil[:content][list_index]
-      puts element
       element[:mods].each_index do |mod_index|
         mod = element[:mods][mod_index]
         case mod[:name]
@@ -100,6 +100,8 @@ define :apply_mods do |anvil|
           end
           anvil[:content] = a.ring
           apply_mods anvil
+        when :div
+          anvil[:content] = apply_divs anvil[:content]
         end
       end
     end
@@ -110,15 +112,32 @@ define :apply_mods do |anvil|
   end
 end
 
+# takes a ring, applys the div mod, return the new ring
+define :apply_divs do |list|
+  silent_arr = []
+  a = ring_to_array list
+  list.each_index do |list_i|
+    silent_arr << { :name => :silence, :mods => [] }
+    el = list[list_i]
+    el[:mods].each_index do |mod_i|
+      mod = el[:mods][mod_i]
+      case mod[:name]
+      when :div
+        el[:mods].delete_at mod_i
+        a.insert list_i + 1, { :name => :silence, :mods => [] }
+      end
+    end
+  end
+  silent_arr = {:name => :list, :content => silent_arr.ring}
+  a = {:name => :list, :content => a.ring}
+  return [{:name => :curly_bracket, :content => [silent_arr,a], :index => 0, :mods => []}].ring
+end
+
 define :forge do |string|
   anvil = parser.parse(string).content
   apply_mods anvil
+  puts anvil
   live_loop :demo do
     play_data_structure anvil
   end
 end
-
-anvil = parser.parse("~ ~").content
-puts anvil
-apply_mods anvil
-puts anvil
