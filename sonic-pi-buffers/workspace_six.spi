@@ -1,5 +1,5 @@
 require 'treetop'
-Treetop.load 'PATH_TO/forge_grammar.tt'
+Treetop.load 'PATH_TO/grammar/forge_grammar.tt'
 
 parser = ForgeGrammarParser.new
 
