@@ -1,4 +1,19 @@
-#sample :forge_f2_pc
+sounds = {
+  :name => :list,
+  :content => (ring
+               {
+                 :name => :sym,
+                 :content => :drum_heavy_kick,
+                 :mods => []
+               },
+               {
+                 :name => :sym,
+                 :content => :drum_cymbal_closed,
+                 :mods => []
+               }
+               )
+}
 
-forge({ :the_axe => "[45 49(3,4),forge_d1_pc(2,3)]",
-        :the_drums => "k(3,4)"})
+live_loop :demo do
+  play_data_structure sounds
+end

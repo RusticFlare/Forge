@@ -1,0 +1,183 @@
+grammar ForgeGrammar
+
+  rule forge
+    pos_ws list pos_ws {
+      def content
+        { :name => :list , :content => elements[1].content.ring }
+      end
+    }
+  end
+
+  rule list
+    expr def_ws list {
+      def content
+       elements[0].content + elements[2].content
+      end
+    }
+    /
+    expr 1..1 {
+      def content
+        elements[0].content
+      end
+    }
+  end
+  
+  rule expr
+    elemt mods {
+      def content
+        [elements[0].content.merge({ :mods => elements[1].content })]
+      end
+    }
+    /
+    elemt 1..1 {
+      def content
+        [elements[0].content.merge({ :mods => [] })]
+      end
+    }
+  end
+  
+  rule elemt
+    "[" pos_ws array pos_ws "]" {
+      def content
+        { :name => :square_bracket , :content => elements[2].content }
+      end
+    }
+    /
+    "{" pos_ws array pos_ws "}" {
+      def content
+        { :name => :curly_bracket , :content => elements[2].content , :index => 0 }
+      end
+    }
+    /
+    silence 1..1 {
+      def content
+        { :name => :silence }
+      end
+    }
+    /
+    float !word {
+      def content
+        { :name => :note , :content => elements[0].content }
+      end
+    }
+    /
+    word 1..1 {
+      def content
+        { :name => :word , :content => elements[0].content }
+      end
+    }
+    /
+    sym 1..1 {
+      def content
+        { :name => :sym , :content => elements[0].content }
+      end
+    }
+  end
+  
+  rule mods
+    mod mods {
+      def content
+        [elements[0].content] + elements[1].content
+      end
+    }
+    /
+    mod 1..1 {
+      def content
+        [elements[0].content]
+      end
+    }
+  end
+  
+  rule mod
+    '*' nat {
+      def content
+        { :name => :mult , :content => elements[1].content }
+      end
+    }
+    /
+    '/' float {
+      def content
+        { :name => :div , :content => elements[1].content }
+      end
+    }
+    /
+    '(' pos_ws nat comma nat pos_ws ')' {
+      def content
+        { :name => :spread , :content => { :ammount => elements[2].content , :per => elements[4].content } }
+      end
+    }
+  end
+
+	rule array
+    forge comma array {
+      def content
+        [elements[0].content] + elements[2].content
+      end
+    }
+    /
+    forge 1..1 {
+      def content
+        [elements[0].content]
+      end
+    }
+  end
+  
+  rule word
+    [a-zA-Z0-9_]+ {
+      def content
+        text_value
+      end
+    }
+  end
+  
+  rule nat
+    [0-9]+ {
+      def content
+        text_value.to_i
+      end
+    }
+  end
+  
+  rule float
+    nat '.' nat {
+      def content
+        text_value.to_f
+      end
+    }
+    /
+    nat {
+      def content
+        text_value.to_f
+      end
+    }
+  end
+  
+  rule sym
+    ':' word  {
+      def content
+        elements[1].content.parameterize.underscore.to_sym
+      end
+    }
+  end
+  
+  rule silence
+    '~'
+  end
+  
+  rule pos_ws
+    ws*
+  end
+  
+  rule def_ws
+    ws+
+  end
+  
+  rule ws
+    [\s\t\r\n]
+  end
+  
+  rule comma
+    pos_ws ',' pos_ws
+  end
+
+end

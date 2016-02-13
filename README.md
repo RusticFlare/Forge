@@ -10,29 +10,29 @@ Forge is a live coding language for generating heavy metal music.
 ```ruby
 forge({ :drums => "k" })
 ```
-* A repeating kick and snare - *Spaced items are played simultaneously.*
+* A repeating kick then snare
 ```ruby
-forge({ :drums => "k s" })
+forge({ :drums => "k s" }) # Listed items are played one after the other
 ```
-* A repeating kick then snare - *Listed items are played one after the other. Note that the loop stays the same length.*
+* A repeating kick and snare
 ```ruby
-forge({ :drums => "[k, s]" })
+forge({ :drums => "[k, s]" }) # Arrayed items are played simultaneously
 ```
 * These can be combined in anyway
 ```ruby
-forge({ :drums => "[k, k, k, k] [s, [s, s]]" })
+forge({ :drums => "[k k k k] [s [s s]]" })
 ```
-* `x` can be used for silence
+* `~` can be used for silence
 ```ruby
-forge({ :drums => "[k, x, s]" })
+forge({ :drums => "~" }) # This is an empty loop 
 ```
-* You can define multiple loops - *Numbers refer to guitar notes.*
+* You can define multiple loops
 ```ruby
-forge({ :guitar => "[45, 49, 47, 45]",
-        :drums => "[k s, k]" })
+forge({ :guitar => "45 49 47 45", # Numbers refer to guitar notes
+        :drums => "[k k,s]" })
 ```
 ### Additional features
 Several shortcuts exist in Forge to make live-coding easier
 
-* `*` can be used to repeat a sound. `k*3` is the same as `[k, k, k]`
-* You can spread sounds over intervals using something of the form `k(3,5)` - here 3 kick drums are spread ove 5 beats, so it is equal to `[k, x, k, x, k]`
+* `*` can be used to repeat a sound. `k*3` is the same as `k k k`
+* You can spread sounds over intervals using something of the form `k(3,5)` - here 3 kick drums are spread ove 5 beats, so it is equal to `k ~ k ~ k`
