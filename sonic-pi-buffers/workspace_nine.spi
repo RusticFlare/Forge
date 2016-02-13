@@ -86,6 +86,9 @@ define :play_anvil do |anvil|
     end
     anvil[:index] = anvil[:index] + steps
     sleep 1
+  when :word
+    eval anvil[:content]
+    sleep 1
   else
     sleep 1
   end

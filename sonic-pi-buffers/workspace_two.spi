@@ -1,28 +1,6 @@
-puts(string_convert("2*2") == "[ 2 , 2 ]")
-puts(string_convert("[k(5,8)]") == "[ [ k , x , k , x , k , k , x , k ] ]")
-puts(string_convert("[k*2(3,8)]") == "[ [ [ k , k ] , x , x , [ k , k ] , x , x , [ k , k ] , x ] ]")
-puts(string_convert("s*2*2") == "[ [ s , s ] , [ s , s ] ]")
-puts(string_convert("s*2") == "[ s , s ]")
-puts(string_convert("s *2") == "[ s , s ]")
-puts(string_convert("[s k]*2") == "[ [ s k ] , [ s k ] ]")
-puts(string_convert("k*8 s*2") == "[ k , k , k , k , k , k , k , k ] [ s , s ]")
-puts(string_convert("[k*8 , s*2]")  == "[ [ k , k , k , k , k , k , k , k ] , [ s , s ] ]")
-
-puts(string_eval("k",[]) == string_eval("[k]",Array.new))
-puts(string_eval("k*2",[]) == [{:sounds=>[:k], :sleep=>0.5}, {:sounds=>[:k], :sleep=>0.5}])
-puts(string_eval("k(3,4)",[]) == [{:sounds=>[:k], :sleep=>0.25}, {:sounds=>[:x], :sleep=>0.25}, {:sounds=>[:k], :sleep=>0.25}, {:sounds=>[:k], :sleep=>0.25}])
-puts(string_eval("[k]",[]) == [{:sounds=>[:k], :sleep=>1.0}])
-puts(string_eval("[k s]",[]) == [{:sounds=>[:k, :s], :sleep=>1.0}])
-puts(string_eval("[k, k] [s]",[]) == [{:sounds=>[:k, :s], :sleep=>0.5}, {:sounds=>[:k], :sleep=>0.5}])
-puts(string_eval("[k k] [s]",[]) == [{:sounds=>[:k, :k, :s], :sleep=>1.0}])
-puts(string_eval("[k, s]",[]) == [{:sounds=>[:k], :sleep=>0.5}, {:sounds=>[:s], :sleep=>0.5}])
-puts(string_eval("[k,k,k,k] [s,s]",[]) == [{:sounds=>[:k, :s], :sleep=>0.25}, {:sounds=>[:k], :sleep=>0.25}, {:sounds=>[:k, :s], :sleep=>0.25}, {:sounds=>[:k], :sleep=>0.25}])
-puts(string_eval("[k,k,k] [s,s]",[]) == [{:sounds=>[:k, :s], :sleep=>0.16666666666666666}, {:sounds=>[:x], :sleep=>0.16666666666666666}, {:sounds=>[:k], :sleep=>0.16666666666666666}, {:sounds=>[:s], :sleep=>0.16666666666666666}, {:sounds=>[:k], :sleep=>0.16666666666666666}, {:sounds=>[:x], :sleep=>0.16666666666666666}])
-puts(string_eval("2*2",[]) == [{:sounds=>[2.0], :sleep=>0.5}, {:sounds=>[2.0], :sleep=>0.5}])
-
-puts(!is_array?(""))
-puts(is_array?("[]"))
-puts(!is_array?("[][]"))
-puts(!is_array?("[] []"))
-puts(is_array?("[[]]"))
-puts(!is_array?("[]()"))
+live_loop :demo do
+  sample :drum_heavy_kick
+  sleep 0.5
+  sample :drum_cymbal_closed
+  sleep 0.5
+end

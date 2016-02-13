@@ -49,6 +49,12 @@ grammar ForgeGrammar
       end
     }
     /
+    silence 1..1 {
+      def content
+        { :name => :silence }
+      end
+    }
+    /
     float !word {
       def content
         { :name => :note , :content => elements[0].content }
@@ -152,6 +158,10 @@ grammar ForgeGrammar
         elements[1].content.parameterize.underscore.to_sym
       end
     }
+  end
+  
+  rule silence
+    '~'
   end
 
 end
