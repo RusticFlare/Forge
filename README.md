@@ -3,7 +3,7 @@ Forge is a live coding language for generating heavy metal music.
 
 ## To use Forge
 1. [Download Sonic-Pi](http://sonic-pi.net/ "Download Sonic-Pi")
-2. Copy the contents of [`vendor/`](vendor/) into `sonic-pi/app/server/vendor/`
+2. Copy the contents of [`vendor/`](vendor/) into `PATH_TO/sonic-pi/app/server/vendor/`
 3. Copy the contents of [`sonic-pi-buffers/workspace_zero.spi`](sonic-pi-buffers/workspace_zero.spi) into any Sonic-Pi buffer
 4. Change `'PATH_TO/grammar/forge_grammar.tt'` on line 2 to the folders local path
 5. Run the buffer (**_This must be run every time Sonic-Pi is opened_**)
