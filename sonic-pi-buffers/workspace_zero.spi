@@ -1,7 +1,8 @@
 require 'treetop'
-Treetop.load 'PATH_TO/grammar/forge_grammar.tt'
+Treetop.load 'C:/Users/j_d_b/Documents/GitHub/forge/grammar/forge_grammar.tt'
 
 parser = ForgeGrammarParser.new
+empty_anvil = { :name => :silence, :mods => [] , :release => 1 }
 
 define :play_anvil_list do |list,steps,index|
   with_bpm_mul(steps) do
@@ -18,23 +19,27 @@ define :play_data_structure do |anvil|
     sample anvil[:content]
     sleep 1
   when :note
-    play anvil[:content]
+    play anvil[:content], release: anvil[:release]
     sleep 1
   when :list
     play_anvil_list anvil, anvil[:content].length, 0
   when :square_bracket
-    anvil[:content].each do |list|
-      in_thread do
-        play_data_structure list
+    density 1/anvil[:release] do
+      anvil[:content].each do |list|
+        in_thread do
+          play_data_structure list
+        end
       end
     end
     sleep 1
   when :curly_bracket
     index = anvil[:index]
     steps = anvil[:content][0][:content].length
-    anvil[:content].each do |list|
-      in_thread do
-        play_anvil_list list, steps, index
+    density 1.0/anvil[:release] do
+      anvil[:content].each do |list|
+        in_thread do
+          play_anvil_list list, steps, index
+        end
       end
     end
     anvil[:index] = anvil[:index] + steps
@@ -117,7 +122,7 @@ define :apply_divs do |list|
   silent_arr = []
   a = ring_to_array list
   list.each_index do |list_i|
-    silent_arr << { :name => :silence, :mods => [] }
+    silent_arr << empty_anvil
     el = list[list_i]
     el[:mods].each_index do |mod_i|
       mod = el[:mods][mod_i]
@@ -125,15 +130,16 @@ define :apply_divs do |list|
       when :div
         div = mod[:content]
         el[:mods].delete_at mod_i
+        el[:release] = el[:release]*div
         div.times do
-        a.insert list_i + 1, { :name => :silence, :mods => [] }
-          end
+          a.insert list_i + 1, empty_anvil
+        end
       end
     end
   end
   silent_arr = {:name => :list, :content => silent_arr.ring}
   a = {:name => :list, :content => a.ring}
-  return [{:name => :curly_bracket, :content => [silent_arr,a], :index => 0, :mods => []}].ring
+  return [{:name => :curly_bracket, :content => [silent_arr,a], :index => 0, :release => 1.0, :mods => []}].ring
 end
 
 define :forge do |string|
@@ -144,3 +150,5 @@ define :forge do |string|
     play_data_structure anvil
   end
 end
+
+forge "[1]/3"
