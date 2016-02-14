@@ -3,7 +3,7 @@ grammar ForgeGrammar
   rule forge
     pos_ws list pos_ws {
       def content
-        { :name => :list , :content => elements[1].content.ring }
+        { :name => :list , :content => elements[1].content.ring , :release => 1.0 }
       end
     }
   end
@@ -39,37 +39,37 @@ grammar ForgeGrammar
   rule elemt
     "[" pos_ws array pos_ws "]" {
       def content
-        { :name => :square_bracket , :content => elements[2].content }
+        { :name => :square_bracket , :content => elements[2].content , :release => 1.0 }
       end
     }
     /
     "{" pos_ws array pos_ws "}" {
       def content
-        { :name => :curly_bracket , :content => elements[2].content , :index => 0 }
+        { :name => :curly_bracket , :content => elements[2].content , :index => 0 , :release => 1.0 }
       end
     }
     /
     silence 1..1 {
       def content
-        { :name => :silence }
+        { :name => :silence , :release => 1 }
       end
     }
     /
     float !word {
       def content
-        { :name => :note , :content => elements[0].content }
+        { :name => :note , :content => elements[0].content , :release => 1.0 }
       end
     }
     /
     word 1..1 {
       def content
-        { :name => :word , :content => elements[0].content }
+        { :name => :word , :content => elements[0].content , :release => 1.0 }
       end
     }
     /
     sym 1..1 {
       def content
-        { :name => :sym , :content => elements[0].content }
+        { :name => :sym , :content => elements[0].content , :release => 1.0 }
       end
     }
   end
@@ -95,7 +95,7 @@ grammar ForgeGrammar
       end
     }
     /
-    '/' float {
+    '/' nat {
       def content
         { :name => :div , :content => elements[1].content }
       end
