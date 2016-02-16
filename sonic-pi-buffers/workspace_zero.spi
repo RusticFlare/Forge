@@ -121,6 +121,7 @@ end
 define :apply_divs do |list|
   silent_arr = []
   a = ring_to_array list
+  added_els = 0
   list.each_index do |list_i|
     silent_arr << empty_anvil
     el = list[list_i]
@@ -132,7 +133,8 @@ define :apply_divs do |list|
         el[:mods].delete_at mod_i
         el[:release] = el[:release]*div
         (div-1).times do
-          a.insert list_i + 1, empty_anvil
+          added_els = added_els + 1
+          a.insert list_i + added_els, empty_anvil
         end
       end
     end
