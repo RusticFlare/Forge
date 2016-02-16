@@ -1,5 +1,5 @@
 require 'treetop'
-Treetop.load 'C:/Users/j_d_b/Documents/GitHub/forge/grammar/forge_grammar.tt'
+Treetop.load 'PATH_TO/grammar/forge_grammar.tt'
 
 parser = ForgeGrammarParser.new
 empty_anvil = { :name => :silence, :mods => [] , :release => 1 }
@@ -131,7 +131,7 @@ define :apply_divs do |list|
         div = mod[:content]
         el[:mods].delete_at mod_i
         el[:release] = el[:release]*div
-        div.times do
+        (div-1).times do
           a.insert list_i + 1, empty_anvil
         end
       end
