@@ -3,6 +3,23 @@ Treetop.load 'PATH_TO/grammar/forge_grammar.tt'
 
 parser = ForgeGrammarParser.new
 empty_anvil = { :name => :silence, :mods => [] , :release => 1 }
+map = { "k" => :drum_heavy_kick,
+        "s" => :drum_snare_hard,
+        "c" => :drum_cymbal_closed,
+        "et" => :elec_tick,
+        "a1" => :forge_a1,
+        "ab1" => :forge_ab1,
+        "b1" => :forge_b1,
+        "bb1" => :forge_bb1,
+        "c2" => :forge_c2,
+        "cs2" => :forge_cs2,
+        "d2" => :forge_d2,
+        "e1" => :forge_e1,
+        "e2" => :forge_e2,
+        "eb2" => :forge_eb2,
+        "f1" => :forge_f1,
+        "fs1" => :forge_fs1,
+        "g1" => :forge_g1}
 
 define :play_anvil_list do |list,steps,index|
   with_bpm_mul(steps) do
@@ -16,7 +33,7 @@ end
 define :play_data_structure do |anvil|
   case anvil[:name]
   when :sym
-    sample anvil[:content]
+    sample anvil[:content], sustain: 0, release: anvil[:release]
     sleep 1
   when :note
     play anvil[:content], release: anvil[:release]
@@ -45,7 +62,11 @@ define :play_data_structure do |anvil|
     anvil[:index] = anvil[:index] + steps
     sleep 1
   when :word
-    eval anvil[:content]
+    if map.has_key?(anvil[:content])
+      sample map[anvil[:content]], sustain: 0, release: anvil[:release]
+    else
+      eval anvil[:content]
+    end
     sleep 1
   when :silence
     sleep 1
@@ -144,13 +165,17 @@ define :apply_divs do |list|
   return [{:name => :curly_bracket, :content => [silent_arr,a], :index => 0, :release => 1.0, :mods => []}].ring
 end
 
-define :forge do |string|
+define :forge do |symbol,string|
   anvil = parser.parse(string).content
   apply_mods anvil
-  puts anvil
-  live_loop :demo do
-    play_data_structure anvil
+  with_fx :reverb, room: 0.9 do
+    with_fx :distortion, distort: 0.9 do
+      with_fx :flanger, feedback: 0.2 do
+        live_loop symbol do
+          use_synth :piano
+          play_data_structure anvil
+        end
+      end
+    end
   end
 end
-
-forge "[1]/3"
