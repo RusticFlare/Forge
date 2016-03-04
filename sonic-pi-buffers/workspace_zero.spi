@@ -69,7 +69,7 @@ define :play_data_structure do |anvil|
       eval anvil[:content]
     end
     sleep 1
-  when :silence
+  when :silence, :empty_list
     sleep 1
   end
 end

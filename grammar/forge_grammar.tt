@@ -3,7 +3,13 @@ grammar ForgeGrammar
   rule forge
     pos_ws list pos_ws {
       def content
-        { :name => :list , :content => elements[1].content.ring , :release => 1.0 }
+        { :name => :list , :content => elements[1].content.ring }
+      end
+    }
+    /
+    pos_ws 1..1 {
+      def content
+        { :name => :empty_list }
       end
     }
   end
@@ -51,7 +57,7 @@ grammar ForgeGrammar
     /
     silence 1..1 {
       def content
-        { :name => :silence , :release => 1 }
+        { :name => :silence , :release => 1.0 }
       end
     }
     /
