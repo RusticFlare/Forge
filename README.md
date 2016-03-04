@@ -42,7 +42,7 @@ Several shortcuts exist in Forge to make live-coding easier
 * `/` will cause a sound to last longer. For example in `"45/3"` the note will last 3 times longer than the note in `"45"`
 * It is also possibe to define your own sounds in Sonic Pi and call them in Forge. This is done as a function that is evaluated in Forge:
 ```ruby
-# define your sound as an argumentless function
+# Define your sound as an argumentless function
 define :a_chord do
   play 45
   play 47
