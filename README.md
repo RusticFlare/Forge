@@ -27,7 +27,7 @@ forge :drums, "[k k k, cc] [s [s s]]"
 ```
 * `~` can be used for silence
 ```ruby
-forge :drums "~" # This is an empty loop 
+forge :drums, "~" # This is an empty loop 
 ```
 * You can define multiple loops
 ```ruby
