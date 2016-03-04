@@ -5,7 +5,8 @@ parser = ForgeGrammarParser.new
 empty_anvil = { :name => :silence, :mods => [] , :release => 1 }
 map = { "k" => :drum_heavy_kick,
         "s" => :drum_snare_hard,
-        "c" => :drum_cymbal_closed,
+        "co" => :drum_cymbal_open,
+        "cc" => :drum_cymbal_closed,
         "et" => :elec_tick,
         "a1" => :forge_a1,
         "ab1" => :forge_ab1,
@@ -33,7 +34,7 @@ end
 define :play_data_structure do |anvil|
   case anvil[:name]
   when :sym
-    sample anvil[:content], sustain: 0, release: anvil[:release]
+    sample anvil[:content], sustain: 0, release: bt(anvil[:release])
     sleep 1
   when :note
     play anvil[:content], release: anvil[:release]
@@ -63,7 +64,7 @@ define :play_data_structure do |anvil|
     sleep 1
   when :word
     if map.has_key?(anvil[:content])
-      sample map[anvil[:content]], sustain: 0, release: anvil[:release]
+      sample map[anvil[:content]], sustain: 0, release: bt(anvil[:release])
     else
       eval anvil[:content]
     end
@@ -166,6 +167,7 @@ define :apply_divs do |list|
 end
 
 define :forge do |symbol,string|
+  use_bpm 30
   anvil = parser.parse(string).content
   apply_mods anvil
   with_fx :reverb, room: 0.9 do
