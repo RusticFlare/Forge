@@ -35,10 +35,8 @@ define :play_data_structure do |anvil|
   case anvil[:name]
   when :sym
     sample anvil[:content], sustain: 0, release: bt(anvil[:release])
-    sleep 1
   when :note
     play anvil[:content], release: anvil[:release]
-    sleep 1
   when :list
     play_anvil_list anvil, anvil[:content].length, 0
   when :square_bracket
@@ -49,7 +47,6 @@ define :play_data_structure do |anvil|
         end
       end
     end
-    sleep 1
   when :curly_bracket
     index = anvil[:index]
     steps = anvil[:content][0][:content].length
@@ -61,17 +58,14 @@ define :play_data_structure do |anvil|
       end
     end
     anvil[:index] = anvil[:index] + steps
-    sleep 1
   when :word
     if map.has_key?(anvil[:content])
       sample map[anvil[:content]], sustain: 0, release: bt(anvil[:release])
     else
       eval anvil[:content]
     end
-    sleep 1
-  when :silence, :empty_list
-    sleep 1
   end
+  sleep 1
 end
 
 define :ring_to_array do |ring|
@@ -80,10 +74,6 @@ define :ring_to_array do |ring|
     a << e
   end
   a
-end
-
-define :k do
-  sample :drum_heavy_kick
 end
 
 define :apply_mods do |anvil|
@@ -180,4 +170,100 @@ define :forge do |symbol,string|
       end
     end
   end
+end
+
+# Tester
+
+# Merge plan2 into plan1
+define :merge_plan do |plan1,plan2|
+  i = 0
+  j = 0
+  while i < plan1.length
+    while j < plan2.length && plan1[i][:time] >= plan2[j][:time]
+      if plan1[i][:time] = plan2[j][:time]
+        plan1[i][:actions] = plan1[i][:actions] + plan2[j][:actions]
+      else
+        plan1.insert(i,plan2[j])
+      end
+      j = j + 1
+    end
+    i = i + 1
+  end
+  while j < plan2.length
+    plan1 << plan2[j]
+    j = j + 1
+  end
+end
+
+define :plan_anvil_list do |list,steps,index,time,plan|
+  with_bpm_mul(steps) do
+    steps.times do
+      plan_data_structure list[:content][index], time, plan
+      time = time + bt(1)
+      index = index + 1
+    end
+  end
+end
+
+define :plan_data_structure do |anvil,time,plan|
+  case anvil[:name]
+  when :sym, :note, :word
+    a = anvil.dup
+    a[:release] = bt(a[:release])
+    plan << { :time => time , :actions => [a] }
+  when :list
+    plan_anvil_list anvil, anvil[:content].length, 0, time, plan
+  when :square_bracket
+    density 1/anvil[:release] do
+      anvil[:content].each do |list|
+        temp_plan = []
+        plan_data_structure list, time, temp_plan
+        merge_plan plan, temp_plan
+      end
+    end
+  when :curly_bracket
+    index = anvil[:index]
+    steps = anvil[:content][0][:content].length
+    density 1.0/anvil[:release] do
+      anvil[:content].each do |list|
+        temp_plan = []
+        plan_anvil_list list, steps, index, time, temp_plan
+        merge_plan plan, temp_plan
+      end
+    end
+    anvil[:index] = anvil[:index] + steps
+  end
+end
+
+define :play_plan do |plan|
+  in_thread do
+    i = 0
+    while i + 1 < plan.length
+      plan[i][:actions].map do |action|
+        in_thread do
+          play_data_structure action
+        end
+      end
+      sleep plan[i+1][:time] - plan[i][:time]
+      i = i + 1
+    end
+    plan[i][:actions].map do |action|
+      in_thread do
+        play_data_structure action
+      end
+    end
+    sleep 1.0 - plan[i][:time]
+  end
+end
+
+define :forge_plan do |string|
+  anvil = parser.parse(string).content
+  apply_mods anvil
+  plan = []
+  plan_data_structure anvil, 0, plan
+  return plan
+end
+
+define :forge_alt do |string|
+  play_plan forge_plan string
 end
