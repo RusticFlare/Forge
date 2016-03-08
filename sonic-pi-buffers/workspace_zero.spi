@@ -49,6 +49,7 @@ define :play_data_structure do |anvil|
         end
       end
     end
+    sleep 1
   when :curly_bracket
     index = anvil[:index]
     steps = anvil[:content][0][:content].length
