@@ -35,8 +35,10 @@ define :play_data_structure do |anvil|
   case anvil[:name]
   when :sym
     sample anvil[:content], sustain: 0, release: bt(anvil[:release])
+    sleep 1
   when :note
     play anvil[:content], release: anvil[:release]
+    sleep 1
   when :list
     play_anvil_list anvil, anvil[:content].length, 0
   when :square_bracket
@@ -58,14 +60,17 @@ define :play_data_structure do |anvil|
       end
     end
     anvil[:index] = anvil[:index] + steps
+    sleep 1
   when :word
     if map.has_key?(anvil[:content])
       sample map[anvil[:content]], sustain: 0, release: bt(anvil[:release])
     else
       eval anvil[:content]
     end
+    sleep 1
+  when :silence, :empty_list
+    sleep 1
   end
-  sleep 1
 end
 
 define :ring_to_array do |ring|
