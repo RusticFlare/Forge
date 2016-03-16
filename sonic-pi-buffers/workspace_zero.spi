@@ -287,7 +287,7 @@ define :valid_anvil? do |anvil|
     assert anvil[:content].is_a? Float
     assert anvil[:release].is_a? Float
   when :list
-    assert anvil[:content].is_a? Ring
+    assert anvil[:content].is_a? SonicPi::Core::RingVector
     anvil[:content].map do |list|
       assert valid_anvil? list
     end
