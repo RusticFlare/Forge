@@ -9,7 +9,7 @@ grammar ForgeGrammar
     /
     pos_ws 1..1 {
       def content
-        { :name => :empty_list }
+        { :name => :list , :content => [{ :name => :silence , :release => 1.0 , :mods => [] }].ring }
       end
     }
   end

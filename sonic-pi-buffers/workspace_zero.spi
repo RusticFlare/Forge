@@ -69,7 +69,7 @@ define :play_data_structure do |anvil|
       eval anvil[:content]
     end
     sleep 1
-  when :silence, :empty_list
+  when :silence
     sleep 1
   end
 end
@@ -178,7 +178,7 @@ define :forge do |symbol,string|
   end
 end
 
-# Tester
+# Forge Plan
 
 # Merge plan2 into plan1
 define :merge_plan do |plan1,plan2|
@@ -266,10 +266,66 @@ define :forge_plan do |string|
   anvil = parser.parse(string).content
   apply_mods anvil
   plan = []
-  plan_data_structure anvil, 0, plan
+  plan_data_structure anvil, 0.0, plan
   return plan
 end
 
 define :forge_alt do |string|
   play_plan forge_plan string
+end
+
+# Tests
+
+define :valid_anvil? do |anvil|
+  assert anvil.is_a? Hash
+  assert anvil[:name].is_a? Symbol
+  case anvil[:name]
+  when :sym
+    assert anvil[:content].is_a? Symbol
+    assert anvil[:release].is_a? Float
+  when :note
+    assert anvil[:content].is_a? Float
+    assert anvil[:release].is_a? Float
+  when :list
+    assert anvil[:content].is_a? Ring
+    anvil[:content].map do |list|
+      assert valid_anvil? list
+    end
+  when :square_bracket
+    assert anvil[:content].is_a? Array
+    anvil[:content].map do |list|
+      assert valid_anvil? list
+    end
+    assert anvil[:release].is_a? Float
+  when :curly_bracket
+    assert anvil[:index].is_a? Integer
+    assert anvil[:content].is_a? Array
+    anvil[:content].map do |list|
+      assert valid_anvil? list
+    end
+    assert anvil[:release].is_a? Float
+  when :word
+    assert anvil[:content].is_a? String
+    assert anvil[:release].is_a? Float
+  when :silence
+  else
+    assert false, "Anvil name not recognised - " + anvil[:name].to_s
+  end
+  return true
+end
+
+define :valid_forge_plan? do |forge_plan|
+  time = 0.0
+  assert forge_plan.is_a? Array
+  forge_plan.each do |action|
+    assert action.is_a? Hash
+    assert action[:time]
+    assert time <= action[:time]
+    time = action[:time]
+    assert action[:actions].is_a? Array
+    action[:actions].each do |anvil|
+      assert valid_anvil? anvil
+    end
+  end
+  return true
 end
