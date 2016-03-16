@@ -69,7 +69,7 @@ define :play_data_structure do |anvil|
       eval anvil[:content]
     end
     sleep 1
-  when :silence, :empty_list
+  when :silence
     sleep 1
   end
 end
@@ -307,7 +307,7 @@ define :valid_anvil? do |anvil|
   when :word
     assert anvil[:content].is_a? String
     assert anvil[:release].is_a? Float
-  when :silence, :empty_list
+  when :silence
   else
     assert false, "Anvil name not recognised - " + anvil[:name].to_s
   end
@@ -329,7 +329,3 @@ define :valid_forge_plan? do |forge_plan|
   end
   return true
 end
-
-plan = forge_plan "{,45}"
-puts plan
-puts valid_forge_plan? plan
