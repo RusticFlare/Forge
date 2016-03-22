@@ -2,7 +2,7 @@ require 'treetop'
 Treetop.load 'PATH_TO/grammar/forge_grammar.tt'
 
 parser = ForgeGrammarParser.new
-empty_anvil = { :name => :silence, :mods => [] , :release => 1 }
+EMPTY_ANVIL = { :name => :silence, :mods => [] , :release => 1 }
 map = { "k" => :drum_heavy_kick,
         "s" => :drum_snare_hard,
         "co" => :drum_cymbal_open,
@@ -82,11 +82,11 @@ define :ring_to_array do |ring|
   a
 end
 
-define :apply_mods do |anvil|
+define :apply_mods do |anvil,curley_bracket_parent|
   case anvil[:name]
   when :list
     anvil[:content].each do |element|
-      apply_mods element
+      apply_mods element,curley_bracket_parent
     end
     anvil[:content].each_index do |list_index|
       element = anvil[:content][list_index]
@@ -124,24 +124,28 @@ define :apply_mods do |anvil|
           anvil[:content] = a.ring
           apply_mods anvil
         when :div
-          anvil[:content] = apply_divs anvil[:content]
+          anvil[:content] = apply_divs anvil[:content], curley_bracket_parent
         end
       end
     end
-  when :square_bracket, :curly_bracket
+  when :square_bracket
     anvil[:content].map do |list|
-      apply_mods list
+      apply_mods list, false
+    end
+  when :curly_bracket
+    anvil[:content].map do |list|
+      apply_mods list, true
     end
   end
 end
 
 # takes a ring, applys the div mod, return the new ring
-define :apply_divs do |list|
+define :apply_divs do |list,curley_bracket_parent|
   silent_arr = []
   a = ring_to_array list
   added_els = 0
   list.each_index do |list_i|
-    silent_arr << empty_anvil
+    silent_arr << EMPTY_ANVIL
     el = list[list_i]
     el[:mods].each_index do |mod_i|
       mod = el[:mods][mod_i]
@@ -152,20 +156,24 @@ define :apply_divs do |list|
         el[:release] = el[:release]*div
         (div-1).times do
           added_els = added_els + 1
-          a.insert list_i + added_els, empty_anvil
+          a.insert list_i + added_els, EMPTY_ANVIL
         end
       end
     end
   end
-  silent_arr = {:name => :list, :content => silent_arr.ring}
-  a = {:name => :list, :content => a.ring}
-  return [{:name => :curly_bracket, :content => [silent_arr,a], :index => 0, :release => 1.0, :mods => []}].ring
+  if curley_bracket_parent
+    return a.ring
+  else
+    silent_arr = {:name => :list, :content => silent_arr.ring}
+    a = {:name => :list, :content => a.ring}
+    return [{:name => :curly_bracket, :content => [silent_arr,a], :index => 0, :release => 1.0, :mods => []}].ring
+  end
 end
 
 define :forge do |symbol,string|
   use_bpm 30
   anvil = parser.parse(string).content
-  apply_mods anvil
+  apply_mods anvil, false
   with_fx :reverb, room: 0.9 do
     with_fx :distortion, distort: 0.9 do
       with_fx :flanger, feedback: 0.2 do
