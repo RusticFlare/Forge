@@ -104,7 +104,7 @@ define :apply_mods do |anvil,curley_bracket_parent|
             a.insert list_index, el
           end
           anvil[:content] = a.ring
-          apply_mods anvil
+          apply_mods anvil, curley_bracket_parent
         when :spread
           sprd = spread(mod[:content][:ammount],mod[:content][:per])
           a = ring_to_array anvil[:content]
@@ -122,7 +122,7 @@ define :apply_mods do |anvil,curley_bracket_parent|
             end
           end
           anvil[:content] = a.ring
-          apply_mods anvil
+          apply_mods anvil, curley_bracket_parent
         when :div
           anvil[:content] = apply_divs anvil[:content], curley_bracket_parent
         end
