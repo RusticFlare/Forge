@@ -133,8 +133,8 @@ define :apply_mods do |anvil,curley_bracket_parent|
       apply_mods list, false
     end
   when :timed_parallel
-    anvil[:content].map do |list|
-      apply_mods list, true
+    anvil[:content].each_index do |i|
+      apply_mods anvil[:content][i], 0 < i
     end
   end
 end
