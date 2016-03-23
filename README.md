@@ -39,7 +39,7 @@ forge :drums, "[k k,s]"
 Several shortcuts exist in Forge to make live-coding easier
 
 * `*` can be used to repeat a sound. `"k*3"` is the same as `"k k k"`
-* You can spread sounds over intervals using something of the form `"k(3,5)"` - here 3 kick drums are spread ove 5 beats, so it is equal to `"k ~ k ~ k"`
+* You can spread sounds over intervals using something of the form `"k(3,5)"` - here 3 kick drums are spread evenly over 5 beats, so it is equal to `"k ~ k ~ k"`
 * `/` will cause a sound to last longer. For example in `"45/3"` the note will last 3 times longer than the note in `"45"`
 * It is also possibe to define your own sounds in Sonic Pi and call them in Forge. This is done as a function that is evaluated in Forge:
 ```ruby
