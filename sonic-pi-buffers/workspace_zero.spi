@@ -39,9 +39,9 @@ define :play_data_structure do |anvil|
   when :note
     play anvil[:content], release: anvil[:release]
     sleep 1
-  when :list
+  when :sequential
     play_anvil_list anvil, anvil[:content].length, 0
-  when :square_bracket
+  when :parallel
     density 1/anvil[:release] do
       anvil[:content].each do |list|
         in_thread do
@@ -50,7 +50,7 @@ define :play_data_structure do |anvil|
       end
     end
     sleep 1
-  when :curly_bracket
+  when :timed_parallel
     index = anvil[:index]
     steps = anvil[:content][0][:content].length
     density 1.0/anvil[:release] do
@@ -84,7 +84,7 @@ end
 
 define :apply_mods do |anvil,curley_bracket_parent|
   case anvil[:name]
-  when :list
+  when :sequential
     anvil[:content].each do |element|
       apply_mods element,curley_bracket_parent
     end
@@ -128,11 +128,11 @@ define :apply_mods do |anvil,curley_bracket_parent|
         end
       end
     end
-  when :square_bracket
+  when :parallel
     anvil[:content].map do |list|
       apply_mods list, false
     end
-  when :curly_bracket
+  when :timed_parallel
     anvil[:content].map do |list|
       apply_mods list, true
     end
@@ -164,9 +164,9 @@ define :apply_divs do |list,curley_bracket_parent|
   if curley_bracket_parent
     return a.ring
   else
-    silent_arr = {:name => :list, :content => silent_arr.ring}
-    a = {:name => :list, :content => a.ring}
-    return [{:name => :curly_bracket, :content => [silent_arr,a], :index => 0, :release => 1.0, :mods => []}].ring
+    silent_arr = {:name => :sequential, :content => silent_arr.ring}
+    a = {:name => :sequential, :content => a.ring}
+    return [{:name => :timed_parallel, :content => [silent_arr,a], :index => 0, :release => 1.0, :mods => []}].ring
   end
 end
 
@@ -225,9 +225,9 @@ define :plan_data_structure do |anvil,time,plan|
     a = anvil.dup
     a[:release] = bt(a[:release])
     plan << { :time => time , :actions => [a] }
-  when :list
+  when :sequential
     plan_anvil_list anvil, anvil[:content].length, 0, time, plan
-  when :square_bracket
+  when :parallel
     density 1/anvil[:release] do
       anvil[:content].each do |list|
         temp_plan = []
@@ -235,7 +235,7 @@ define :plan_data_structure do |anvil,time,plan|
         merge_plan plan, temp_plan
       end
     end
-  when :curly_bracket
+  when :timed_parallel
     index = anvil[:index]
     steps = anvil[:content][0][:content].length
     density 1.0/anvil[:release] do
@@ -294,18 +294,18 @@ define :valid_anvil? do |anvil|
   when :note
     assert anvil[:content].is_a? Float
     assert anvil[:release].is_a? Float
-  when :list
+  when :sequential
     assert anvil[:content].is_a? SonicPi::Core::RingVector
     anvil[:content].map do |list|
       assert valid_anvil? list
     end
-  when :square_bracket
+  when :parallel
     assert anvil[:content].is_a? Array
     anvil[:content].map do |list|
       assert valid_anvil? list
     end
     assert anvil[:release].is_a? Float
-  when :curly_bracket
+  when :timed_parallel
     assert anvil[:index].is_a? Integer
     assert anvil[:content].is_a? Array
     anvil[:content].map do |list|

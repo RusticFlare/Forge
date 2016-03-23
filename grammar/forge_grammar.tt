@@ -3,13 +3,13 @@ grammar ForgeGrammar
   rule forge
     pos_ws list pos_ws {
       def content
-        { :name => :list , :content => elements[1].content.ring }
+        { :name => :sequential , :content => elements[1].content.ring }
       end
     }
     /
     pos_ws 1..1 {
       def content
-        { :name => :list , :content => [{ :name => :silence , :release => 1.0 , :mods => [] }].ring }
+        { :name => :sequential , :content => [{ :name => :silence , :release => 1.0 , :mods => [] }].ring }
       end
     }
   end
@@ -45,13 +45,13 @@ grammar ForgeGrammar
   rule elemt
     "[" pos_ws array pos_ws "]" {
       def content
-        { :name => :square_bracket , :content => elements[2].content , :release => 1.0 }
+        { :name => :parallel , :content => elements[2].content , :release => 1.0 }
       end
     }
     /
     "{" pos_ws array pos_ws "}" {
       def content
-        { :name => :curly_bracket , :content => elements[2].content , :index => 0 , :release => 1.0 }
+        { :name => :timed_parallel , :content => elements[2].content , :index => 0 , :release => 1.0 }
       end
     }
     /
