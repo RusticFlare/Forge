@@ -272,7 +272,7 @@ end
 
 define :forge_plan do |string|
   anvil = parser.parse(string).content
-  apply_mods anvil
+  apply_mods anvil, false
   plan = []
   plan_data_structure anvil, 0.0, plan
   return plan
