@@ -73,7 +73,7 @@ assert_equal plan, [{:time=>0.0, :actions=>[{:name=>:note, :content=>45.0, :rele
 
 anvil = parser.parse("45/2").content
 assert valid_anvil? anvil
-assert_equal anvil, {:name=>:sequential, :content=>(ring {:name=>:note, :content=>45.0, :release=>1.0, :mods=>[{:name=>:div, :content=>2}]})}
+assert_equal anvil, {:name=>:sequential, :content=>(ring {:name=>:note, :content=>45.0, :release=>1.0, :mods=>[{:name=>:stretch, :content=>2}]})}
 apply_mods anvil, false
 assert valid_anvil? anvil
 assert_equal anvil, {:name=>:sequential, :content=>(ring {:name=>:timed_parallel, :content=>[{:name=>:sequential, :content=>(ring {:name=>:silence, :mods=>[], :release=>1})}, {:name=>:sequential, :content=>(ring {:name=>:note, :content=>45.0, :release=>2.0, :mods=>[]}, {:name=>:silence, :mods=>[], :release=>1})}], :index=>0, :release=>1.0, :mods=>[]})}
@@ -106,7 +106,7 @@ assert_equal plan, [{:time=>0.0, :actions=>[{:name=>:note, :content=>45.0, :rele
 
 anvil = parser.parse("{45/3, 50/2}").content
 assert valid_anvil? anvil
-assert_equal anvil, {:name=>:sequential, :content=>(ring {:name=>:timed_parallel, :content=>[{:name=>:sequential, :content=>(ring {:name=>:note, :content=>45.0, :release=>1.0, :mods=>[{:name=>:div, :content=>3}]})}, {:name=>:sequential, :content=>(ring {:name=>:note, :content=>50.0, :release=>1.0, :mods=>[{:name=>:div, :content=>2}]})}], :index=>0, :release=>1.0, :mods=>[]})}
+assert_equal anvil, {:name=>:sequential, :content=>(ring {:name=>:timed_parallel, :content=>[{:name=>:sequential, :content=>(ring {:name=>:note, :content=>45.0, :release=>1.0, :mods=>[{:name=>:stretch, :content=>3}]})}, {:name=>:sequential, :content=>(ring {:name=>:note, :content=>50.0, :release=>1.0, :mods=>[{:name=>:stretch, :content=>2}]})}], :index=>0, :release=>1.0, :mods=>[]})}
 apply_mods anvil, false
 assert valid_anvil? anvil
 assert_equal anvil, {:name=>:sequential, :content=>(ring {:name=>:timed_parallel, :content=>[{:name=>:sequential, :content=>(ring {:name=>:timed_parallel, :content=>[{:name=>:sequential, :content=>(ring {:name=>:silence, :mods=>[], :release=>1})}, {:name=>:sequential, :content=>(ring {:name=>:note, :content=>45.0, :release=>3.0, :mods=>[]}, {:name=>:silence, :mods=>[], :release=>1}, {:name=>:silence, :mods=>[], :release=>1})}], :index=>0, :release=>1.0, :mods=>[]})}, {:name=>:sequential, :content=>(ring {:name=>:note, :content=>50.0, :release=>2.0, :mods=>[]}, {:name=>:silence, :mods=>[], :release=>1})}], :index=>0, :release=>1.0, :mods=>[]})}

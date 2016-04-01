@@ -103,7 +103,7 @@ grammar ForgeGrammar
     /
     '/' nat {
       def content
-        { :name => :div , :content => elements[1].content }
+        { :name => :stretch , :content => elements[1].content }
       end
     }
     /
