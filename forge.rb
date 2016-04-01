@@ -123,8 +123,8 @@ define :apply_mods do |anvil,curley_bracket_parent|
           end
           anvil[:content] = a.ring
           apply_mods anvil, curley_bracket_parent
-        when :div
-          anvil[:content] = apply_divs anvil[:content], curley_bracket_parent
+        when :stretch
+          anvil[:content] = apply_stretchs anvil[:content], curley_bracket_parent
         when :release
           element[:release] = mod[:content] * element[:release]
         end
@@ -141,8 +141,8 @@ define :apply_mods do |anvil,curley_bracket_parent|
   end
 end
 
-# takes a ring, applys the div mod, return the new ring
-define :apply_divs do |list,curley_bracket_parent|
+# takes a ring, applys the stretch mod, return the new ring
+define :apply_stretchs do |list,curley_bracket_parent|
   silent_arr = []
   a = ring_to_array list
   added_els = 0
@@ -152,11 +152,11 @@ define :apply_divs do |list,curley_bracket_parent|
     el[:mods].each_index do |mod_i|
       mod = el[:mods][mod_i]
       case mod[:name]
-      when :div
-        div = mod[:content]
+      when :stretch
+        str = mod[:content]
         el[:mods].delete_at mod_i
-        el[:release] = el[:release]*div
-        (div-1).times do
+        el[:release] = el[:release]*str
+        (str-1).times do
           added_els = added_els + 1
           a.insert list_i + added_els, EMPTY_ANVIL
         end
