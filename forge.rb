@@ -171,15 +171,17 @@ define :apply_divs do |list,curley_bracket_parent|
 end
 
 define :forge do |symbol,string|
-  use_bpm 30
-  anvil = parser.parse(string).content
-  apply_mods anvil, false
-  with_fx :reverb, room: 0.9 do
-    with_fx :distortion, distort: 0.9 do
-      with_fx :flanger, feedback: 0.2 do
-        live_loop symbol do
-          use_synth :piano
-          play_data_structure anvil
+  with_bpm_mul 0.25 do
+    anvil = parser.parse(string).content
+    #puts anvil
+    apply_mods anvil, false
+    with_fx :reverb, room: 0.9 do
+      with_fx :distortion, distort: 0.9 do
+        with_fx :flanger, feedback: 0.2 do
+          live_loop symbol do
+            use_synth :blade
+            play_data_structure anvil
+          end
         end
       end
     end
