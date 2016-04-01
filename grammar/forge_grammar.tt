@@ -107,6 +107,12 @@ grammar ForgeGrammar
       end
     }
     /
+    '-' float {
+      def content
+        { :name => :release , :content => elements[1].content }
+      end
+    }
+    /
     '(' pos_ws nat comma nat pos_ws ')' {
       def content
         { :name => :spread , :content => { :ammount => elements[2].content , :per => elements[4].content } }
