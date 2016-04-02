@@ -180,7 +180,7 @@ define :forge do |symbol,string|
       with_fx :distortion, distort: 0.9 do
         with_fx :flanger, feedback: 0.2 do
           live_loop symbol do
-            use_synth :piano
+            use_synth :prophet
             play_data_structure anvil
           end
         end
