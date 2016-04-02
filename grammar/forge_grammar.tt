@@ -61,7 +61,7 @@ grammar ForgeGrammar
       end
     }
     /
-    float !word {
+    note !word {
       def content
         { :name => :note , :content => elements[0].content , :release => 1.0 }
       end
@@ -160,6 +160,20 @@ grammar ForgeGrammar
     nat {
       def content
         text_value.to_f
+      end
+    }
+  end
+  
+  rule note
+    float '>' note {
+      def content
+        [elements[0].content] + elements[2].content
+      end
+    }
+    /
+    float 1..1 {
+      def content
+        [elements[0].content]
       end
     }
   end
