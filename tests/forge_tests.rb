@@ -153,11 +153,11 @@ assert valid_anvil? anvil
 assert_equal anvil, {:name=>:sequential, :content=>(ring {:name=>:note, :content=>[45.0], :release=>1.0, :mods=>[{:name=>:release, :content=>2.0}]}, {:name=>:silence, :release=>1.0, :mods=>[]})}
 apply_mods anvil, false
 assert valid_anvil? anvil
-assert_equal anvil, {:name=>:sequential, :content=>(ring {:name=>:note, :content=>[45.0], :release=>2.0, :mods=>[{:name=>:release, :content=>2.0}]}, {:name=>:silence, :release=>1.0, :mods=>[]})}
+assert_equal anvil, {:name=>:sequential, :content=>(ring {:name=>:note, :content=>[45.0], :release=>2.0, :mods=>[]}, {:name=>:silence, :release=>1.0, :mods=>[]})}
 plan = []
 plan_data_structure anvil, 0.0, plan
 assert valid_forge_plan? plan
-assert_equal plan, [{:time=>0.0, :actions=>[{:name=>:note, :content=>[45.0], :release=>1.0, :mods=>[{:name=>:release, :content=>2.0}]}]}]
+assert_equal plan, [{:time=>0.0, :actions=>[{:name=>:note, :content=>[45.0], :release=>1.0, :mods=>[]}]}]
 
 anvil = parser.parse("45").content
 assert valid_anvil? anvil

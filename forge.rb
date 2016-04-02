@@ -136,6 +136,8 @@ define :apply_mods do |anvil,curley_bracket_parent|
           anvil[:content] = apply_stretchs anvil[:content], curley_bracket_parent
         when :release
           element[:release] = mod[:content] * element[:release]
+          element[:mods].delete_at mod_index
+          apply_mods anvil, curley_bracket_parent
         end
       end
     end
