@@ -37,7 +37,16 @@ define :play_data_structure do |anvil|
     sample anvil[:content], sustain: 0, release: bt(anvil[:release])
     sleep 1
   when :note
-    play anvil[:content], release: anvil[:release]
+    s = anvil[:release] / anvil[:content].length
+    in_thread do
+      n = play anvil[:content][0], note_slide: s, release: anvil[:release]
+      anvil[:content].each_index do |i|
+        if i > 0
+          control n, note: anvil[:content][i]
+          sleep s
+        end
+      end
+    end
     sleep 1
   when :sequential
     play_anvil_list anvil, anvil[:content].length, 0
@@ -295,7 +304,11 @@ define :valid_anvil? do |anvil|
     assert anvil[:content].is_a? Symbol
     assert anvil[:release].is_a? Float
   when :note
-    assert anvil[:content].is_a? Float
+    assert anvil[:content].is_a? Array
+    assert anvil[:content].length > 0
+    anvil[:content].each do |e|
+      assert e.is_a? Float
+    end
     assert anvil[:release].is_a? Float
   when :sequential
     assert anvil[:content].is_a? SonicPi::Core::RingVector
