@@ -37,13 +37,20 @@ define :play_data_structure do |anvil|
     sample anvil[:content], sustain: 0, release: bt(anvil[:release])
     sleep 1
   when :note
-    s = anvil[:release] / anvil[:content].length
     in_thread do
-      n = play anvil[:content][0], note_slide: s, release: anvil[:release]
-      anvil[:content].each_index do |i|
-        if i > 0
-          control n, note: anvil[:content][i]
-          sleep s
+      with_bpm_mul anvil[:content].length do
+        n = play anvil[:content][0][:note], release: anvil[:release] * anvil[:content].length
+        anvil[:content].each_index do |i|
+          if i > 0
+            if anvil[:content][i][:slide] == 1
+              control n, note_slide: 1, note: anvil[:content][i][:note]
+              sleep 1
+            else
+              sleep 0.5
+              control n, note_slide: 0, note: anvil[:content][i][:note]
+              sleep 0.5
+            end
+          end
         end
       end
     end
@@ -308,8 +315,13 @@ define :valid_anvil? do |anvil|
   when :note
     assert anvil[:content].is_a? Array
     assert anvil[:content].length > 0
-    anvil[:content].each do |e|
-      assert e.is_a? Float
+    anvil[:content].each_index do |i|
+      e = anvil[:content][i]
+      assert e.is_a? Hash
+      assert e[:note].is_a? Float
+      if i > 0
+        assert(e[:slide] == 0 || e[:slide] == 1)
+      end
     end
     assert anvil[:release].is_a? Float
   when :sequential
