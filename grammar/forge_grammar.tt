@@ -167,13 +167,23 @@ grammar ForgeGrammar
   rule note
     float '>' note {
       def content
-        [elements[0].content] + elements[2].content
+        es = elements[2].content
+        es[0][:slide] = 1
+        [ { :note => elements[0].content } ] + es
+      end
+    }
+    /
+    float '^' note {
+      def content
+        es = elements[2].content
+        es[0][:slide] = 0
+        [ { :note => elements[0].content } ] + es
       end
     }
     /
     float 1..1 {
       def content
-        [elements[0].content]
+        [ { :note => elements[0].content } ]
       end
     }
   end
