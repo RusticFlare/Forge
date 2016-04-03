@@ -38,8 +38,9 @@ define :play_data_structure do |anvil|
     sleep 1
   when :note
     in_thread do
-      with_bpm_mul anvil[:content].length do
-        n = play anvil[:content][0][:note], release: anvil[:release] * anvil[:content].length
+      bpm_mul = [ anvil[:content].length - 1 , 1 ].max
+      with_bpm_mul bpm_mul do
+        n = play anvil[:content][0][:note], release: anvil[:release] * bpm_mul
         anvil[:content].each_index do |i|
           if i > 0
             if anvil[:content][i][:slide] == 1
