@@ -300,7 +300,7 @@ define :forge_plan do |string|
   return plan
 end
 
-define :forge_alt do |string|
+define :play_forge do |string|
   play_plan forge_plan string
 end
 
