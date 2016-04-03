@@ -38,19 +38,17 @@ define :play_data_structure do |anvil|
     sleep 1
   when :note
     in_thread do
-      bpm_mul = [ anvil[:content].length - 1 , 1 ].max
-      with_bpm_mul bpm_mul do
-        n = play anvil[:content][0][:note], release: anvil[:release] * bpm_mul
-        anvil[:content].each_index do |i|
-          if i > 0
-            if anvil[:content][i][:slide] == 1
-              control n, note_slide: 1, note: anvil[:content][i][:note]
-              sleep 1
-            else
-              sleep 0.5
-              control n, note_slide: 0, note: anvil[:content][i][:note]
-              sleep 0.5
-            end
+      slide_length = anvil[:release] / (anvil[:content].length - 1)
+      ham_on_sleep = anvil[:release] / anvil[:content].length
+      n = play anvil[:content][0][:note], release: anvil[:release]
+      anvil[:content].each_index do |i|
+        if i > 0
+          if anvil[:content][i][:slide] == 1
+            control n, note_slide: slide_length, note: anvil[:content][i][:note]
+            sleep slide_length
+          else
+            sleep ham_on_sleep
+            control n, note_slide: 0, note: anvil[:content][i][:note]
           end
         end
       end
