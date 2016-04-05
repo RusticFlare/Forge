@@ -20,7 +20,19 @@ map = { "k" => :drum_heavy_kick,
         "eb" => :forge_eb2,
         "f" => :forge_f1,
         "fs" => :forge_fs1,
-        "g" => :forge_g1}
+        "g" => :forge_g1,
+        "ax" => :forge_a_muted,
+        "aax" => :forge_aa_muted,
+        "asx" => :forge_as_muted,
+        "cx" => :forge_c_muted,
+        "dx" => :forge_d_muted,
+        "ddx" => :forge_dd_muted,
+        "ex" => :forge_e_muted,
+        "eex" => :forge_ee_muted,
+        "fx" => :forge_f_muted,
+        "ffx" => :forge_ff_muted,
+        "gx" => :forge_g_muted,
+        "ggx" => :forge_gg_muted}
 
 define :play_anvil_list do |list,steps,index|
   with_bpm_mul(steps) do
@@ -34,13 +46,13 @@ end
 define :play_data_structure do |anvil|
   case anvil[:type]
   when :sym
-    sample anvil[:content], sustain: 0, release: bt(anvil[:release])
+    sample anvil[:content], env_curve: 4, sustain: 0, release: bt(anvil[:release])
     sleep 1
   when :note
     in_thread do
       slide_length = anvil[:release] / (anvil[:content].length - 1)
       ham_on_sleep = anvil[:release] / anvil[:content].length
-      n = play anvil[:content][0][:note], release: anvil[:release]
+      n = play anvil[:content][0][:note], env_curve: 4, release: anvil[:release]
       anvil[:content].each_index do |i|
         if i > 0
           if anvil[:content][i][:slide] == 1
@@ -79,7 +91,7 @@ define :play_data_structure do |anvil|
     sleep 1
   when :word
     if map.has_key?(anvil[:content])
-      sample map[anvil[:content]], sustain: 0, release: bt(anvil[:release])
+      sample map[anvil[:content]], env_curve: 4, sustain: 0, release: bt(anvil[:release])
     else
       eval anvil[:content]
     end
