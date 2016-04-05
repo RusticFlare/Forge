@@ -3,13 +3,13 @@ grammar ForgeGrammar
   rule forge
     pos_ws list pos_ws {
       def content
-        { :name => :sequential , :content => elements[1].content.ring }
+        { :type => :sequential , :content => elements[1].content.ring }
       end
     }
     /
     pos_ws 1..1 {
       def content
-        { :name => :sequential , :content => [{ :name => :silence , :release => 1.0 , :mods => [] }].ring }
+        { :type => :sequential , :content => [{ :type => :silence , :release => 1.0 , :mods => [] }].ring }
       end
     }
   end
@@ -45,37 +45,37 @@ grammar ForgeGrammar
   rule elemt
     "[" pos_ws array pos_ws "]" {
       def content
-        { :name => :parallel , :content => elements[2].content , :release => 1.0 }
+        { :type => :parallel , :content => elements[2].content , :release => 1.0 }
       end
     }
     /
     "{" pos_ws array pos_ws "}" {
       def content
-        { :name => :timed_parallel , :content => elements[2].content , :index => 0 , :release => 1.0 }
+        { :type => :timed_parallel , :content => elements[2].content , :index => 0 , :release => 1.0 }
       end
     }
     /
     silence 1..1 {
       def content
-        { :name => :silence , :release => 1.0 }
+        { :type => :silence , :release => 1.0 }
       end
     }
     /
     note !word {
       def content
-        { :name => :note , :content => elements[0].content , :release => 1.0 }
+        { :type => :note , :content => elements[0].content , :release => 1.0 }
       end
     }
     /
     word 1..1 {
       def content
-        { :name => :word , :content => elements[0].content , :release => 1.0 }
+        { :type => :word , :content => elements[0].content , :release => 1.0 }
       end
     }
     /
     sym 1..1 {
       def content
-        { :name => :sym , :content => elements[0].content , :release => 1.0 }
+        { :type => :sym , :content => elements[0].content , :release => 1.0 }
       end
     }
   end
@@ -97,25 +97,25 @@ grammar ForgeGrammar
   rule mod
     '*' nat {
       def content
-        { :name => :mult , :content => elements[1].content }
+        { :type => :mult , :content => elements[1].content }
       end
     }
     /
     '/' nat {
       def content
-        { :name => :stretch , :content => elements[1].content }
+        { :type => :stretch , :content => elements[1].content }
       end
     }
     /
     '-' float {
       def content
-        { :name => :release , :content => elements[1].content }
+        { :type => :release , :content => elements[1].content }
       end
     }
     /
     '(' pos_ws nat comma nat pos_ws ')' {
       def content
-        { :name => :spread , :content => { :ammount => elements[2].content , :per => elements[4].content } }
+        { :type => :spread , :content => { :ammount => elements[2].content , :per => elements[4].content } }
       end
     }
   end

@@ -2,7 +2,7 @@ require 'treetop'
 Treetop.load 'PATH_TO/grammar/forge_grammar.tt'
 
 parser = ForgeGrammarParser.new
-EMPTY_ANVIL = { :name => :silence, :mods => [] , :release => 1 }
+EMPTY_ANVIL = { :type => :silence, :mods => [] , :release => 1 }
 map = { "k" => :drum_heavy_kick,
         "s" => :drum_snare_hard,
         "co" => :drum_cymbal_open,
@@ -32,7 +32,7 @@ define :play_anvil_list do |list,steps,index|
 end
 
 define :play_data_structure do |anvil|
-  case anvil[:name]
+  case anvil[:type]
   when :sym
     sample anvil[:content], sustain: 0, release: bt(anvil[:release])
     sleep 1
@@ -98,7 +98,7 @@ define :ring_to_array do |ring|
 end
 
 define :apply_mods do |anvil,curley_bracket_parent|
-  case anvil[:name]
+  case anvil[:type]
   when :sequential
     anvil[:content].each do |element|
       apply_mods element,curley_bracket_parent
@@ -107,7 +107,7 @@ define :apply_mods do |anvil,curley_bracket_parent|
       element = anvil[:content][list_index]
       element[:mods].each_index do |mod_index|
         mod = element[:mods][mod_index]
-        case mod[:name]
+        case mod[:type]
         when :mult
           repeats = mod[:content]
           a = ring_to_array anvil[:content]
@@ -131,7 +131,7 @@ define :apply_mods do |anvil,curley_bracket_parent|
               el[:mods] = element[:mods].dup
               a.insert list_index, el
             else
-              el = { :name => :silence }
+              el = { :type => :silence }
               el[:mods] = element[:mods].dup
               a.insert list_index, el
             end
@@ -168,7 +168,7 @@ define :apply_stretchs do |list,curley_bracket_parent|
     el = list[list_i]
     el[:mods].each_index do |mod_i|
       mod = el[:mods][mod_i]
-      case mod[:name]
+      case mod[:type]
       when :stretch
         str = mod[:content]
         el[:mods].delete_at mod_i
@@ -183,9 +183,9 @@ define :apply_stretchs do |list,curley_bracket_parent|
   if curley_bracket_parent
     return a.ring
   else
-    silent_arr = {:name => :sequential, :content => silent_arr.ring}
-    a = {:name => :sequential, :content => a.ring}
-    return [{:name => :timed_parallel, :content => [silent_arr,a], :index => 0, :release => 1.0, :mods => []}].ring
+    silent_arr = {:type => :sequential, :content => silent_arr.ring}
+    a = {:type => :sequential, :content => a.ring}
+    return [{:type => :timed_parallel, :content => [silent_arr,a], :index => 0, :release => 1.0, :mods => []}].ring
   end
 end
 
@@ -240,7 +240,7 @@ define :plan_anvil_list do |list,steps,index,time,plan|
 end
 
 define :plan_data_structure do |anvil,time,plan|
-  case anvil[:name]
+  case anvil[:type]
   when :sym, :note, :word
     a = anvil.dup
     a[:release] = bt(a[:release])
@@ -306,8 +306,8 @@ end
 
 define :valid_anvil? do |anvil|
   assert anvil.is_a? Hash
-  assert anvil[:name].is_a? Symbol
-  case anvil[:name]
+  assert anvil[:type].is_a? Symbol
+  case anvil[:type]
   when :sym
     assert anvil[:content].is_a? Symbol
     assert anvil[:release].is_a? Float
@@ -346,7 +346,7 @@ define :valid_anvil? do |anvil|
     assert anvil[:release].is_a? Float
   when :silence
   else
-    assert false, "Anvil name not recognised - " + anvil[:name].to_s
+    assert false, "Anvil type not recognised - " + anvil[:type].to_s
   end
   return true
 end
