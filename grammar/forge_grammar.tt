@@ -15,7 +15,7 @@ grammar ForgeGrammar
   end
 
   rule list
-    expr def_ws list {
+    expr ws list {
       def content
        elements[0].content + elements[2].content
       end
@@ -120,7 +120,7 @@ grammar ForgeGrammar
     }
   end
 
-	rule array
+  rule array
     forge comma array {
       def content
         [elements[0].content] + elements[2].content
@@ -204,12 +204,8 @@ grammar ForgeGrammar
     ws*
   end
   
-  rule def_ws
-    ws+
-  end
-  
   rule ws
-    [\s\t\r\n]
+    [\s\t\r\n]+
   end
   
   rule comma
