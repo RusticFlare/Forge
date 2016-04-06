@@ -1,5 +1,5 @@
 # Forge
-Forge is a live coding language for generating heavy metal music. Is is based on [Tidal](https://github.com/tidalcycles/Tidal) and built within [Sonic Pi](https://github.com/samaaron/sonic-pi).
+Forge is a live coding language for generating heavy metal music. It is based on [Tidal](https://github.com/tidalcycles/Tidal) and built within [Sonic Pi](https://github.com/samaaron/sonic-pi).
 
 ## To use Forge
 1. [Download and install Sonic Pi](http://sonic-pi.net/ "Download Sonic Pi")
