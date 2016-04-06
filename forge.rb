@@ -1,5 +1,6 @@
 require 'treetop'
-Treetop.load 'PATH_TO/grammar/forge_grammar.tt'
+DIRECTORY = 'YOUR_PATH_HERE/forge'
+Treetop.load DIRECTORY + '/grammar/forge_grammar.tt'
 
 parser = ForgeGrammarParser.new
 EMPTY_ANVIL = { :type => :silence, :mods => [] , :release => 1 }
@@ -8,31 +9,31 @@ map = { "k" => :drum_heavy_kick,
         "co" => :drum_cymbal_open,
         "cc" => :drum_cymbal_closed,
         "et" => :elec_tick,
-        "a" => :forge_a1,
-        "ab" => :forge_ab1,
-        "b" => :forge_b1,
-        "bb" => :forge_bb1,
-        "c" => :forge_c2,
-        "cs" => :forge_cs2,
-        "d" => :forge_d2,
-        "e" => :forge_e1,
-        "e2" => :forge_e2,
-        "eb" => :forge_eb2,
-        "f" => :forge_f1,
-        "fs" => :forge_fs1,
-        "g" => :forge_g1,
-        "ax" => :forge_a_muted,
-        "aax" => :forge_aa_muted,
-        "asx" => :forge_as_muted,
-        "cx" => :forge_c_muted,
-        "dx" => :forge_d_muted,
-        "ddx" => :forge_dd_muted,
-        "ex" => :forge_e_muted,
-        "eex" => :forge_ee_muted,
-        "fx" => :forge_f_muted,
-        "ffx" => :forge_ff_muted,
-        "gx" => :forge_g_muted,
-        "ggx" => :forge_gg_muted}
+        "a" => DIRECTORY + '/samples/forge_a1.wav',
+        "ab" => DIRECTORY + '/samples/forge_ab1.wav',
+        "b" => DIRECTORY + '/samples/forge_b1.wav',
+        "bb" => DIRECTORY + '/samples/forge_bb1.wav',
+        "c" => DIRECTORY + '/samples/forge_c2.wav',
+        "cs" => DIRECTORY + '/samples/forge_cs2.wav',
+        "d" => DIRECTORY + '/samples/forge_d2.wav',
+        "e" => DIRECTORY + '/samples/forge_e1.wav',
+        "e2" => DIRECTORY + '/samples/forge_e2.wav',
+        "eb" => DIRECTORY + '/samples/forge_eb2.wav',
+        "f" => DIRECTORY + '/samples/forge_f1.wav',
+        "fs" => DIRECTORY + '/samples/forge_fs1.wav',
+        "g" => DIRECTORY + '/samples/forge_g1.wav',
+        "ax" => DIRECTORY + '/samples/forge_a_muted.wav',
+        "aax" => DIRECTORY + '/samples/forge_aa_muted.wav',
+        "asx" => DIRECTORY + '/samples/forge_as_muted.wav',
+        "cx" => DIRECTORY + '/samples/forge_c_muted.wav',
+        "dx" => DIRECTORY + '/samples/forge_d_muted.wav',
+        "ddx" => DIRECTORY + '/samples/forge_dd_muted.wav',
+        "ex" => DIRECTORY + '/samples/forge_e_muted.wav',
+        "eex" => DIRECTORY + '/samples/forge_ee_muted.wav',
+        "fx" => DIRECTORY + '/samples/forge_f_muted.wav',
+        "ffx" => DIRECTORY + '/samples/forge_ff_muted.wav',
+        "gx" => DIRECTORY + '/samples/forge_g_muted.wav',
+        "ggx" => DIRECTORY + '/samples/forge_gg_muted.wav'}
 
 define :play_anvil_list do |list,steps,index|
   with_bpm_mul(steps) do
