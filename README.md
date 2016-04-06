@@ -12,9 +12,9 @@ Forge is a live coding language for generating heavy metal music.
 8. Get coding
 
 ## Forge Examples
-* A simple repeating kick drum  - `:drums` *is the name of the* `live_loop` *created.*
+* A simple repeating kick drum
 ```ruby
-forge :drums, "k"
+forge :drums, "k" # :drums is the name of the live_loop created
 ```
 * A repeating kick then snare
 ```ruby
