@@ -46,7 +46,7 @@ TIMES.times do
   end
   avg_parse_time = avg_parse_time + parse_time
   avg_apply_mods_time = avg_apply_mods_time + apply_mods_time
-  avg_generate_time = avg_generate_time + apply_mods_time
+  avg_generate_time = avg_generate_time + generate_time
 end
 
 puts "min_parse_time = " + min_parse_time.to_s
