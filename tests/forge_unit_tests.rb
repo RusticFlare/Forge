@@ -5,6 +5,17 @@ parser = ForgeGrammarParser.new
 
 # Unit Tests
 
+anvil = parser.parse(" ").content
+assert valid_anvil? anvil
+assert_equal anvil, {:type=>:sequential, :content=>(ring {:type=>:silence, :release=>1.0, :mods=>[]})}
+apply_mods anvil, false
+assert valid_anvil? anvil
+assert_equal anvil, {:type=>:sequential, :content=>(ring {:type=>:silence, :release=>1.0, :mods=>[]})}
+plan = []
+plan_data_structure anvil, 0.0, plan
+assert valid_forge_plan? plan
+assert_equal plan, []
+
 anvil = parser.parse("k").content
 assert valid_anvil? anvil
 assert_equal anvil, {:type=>:sequential, :content=>(ring {:type=>:word, :content=>"k", :release=>1.0, :mods=>[]})}

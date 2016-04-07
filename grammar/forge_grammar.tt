@@ -1,13 +1,13 @@
 grammar ForgeGrammar
 
   rule forge
-    pos_ws list pos_ws {
+    ws list ws {
       def content
         { :type => :sequential , :content => elements[1].content.ring }
       end
     }
     /
-    pos_ws 1..1 {
+    ws 1..1 {
       def content
         { :type => :sequential , :content => [{ :type => :silence , :release => 1.0 , :mods => [] }].ring }
       end
@@ -15,7 +15,7 @@ grammar ForgeGrammar
   end
 
   rule list
-    expr ws list {
+    expr WS list {
       def content
        elements[0].content + elements[2].content
       end
@@ -43,15 +43,15 @@ grammar ForgeGrammar
   end
   
   rule elemt
-    "[" pos_ws array pos_ws "]" {
+    s_brac_o array s_brac_c {
       def content
-        { :type => :parallel , :content => elements[2].content , :release => 1.0 }
+        { :type => :parallel , :content => elements[1].content , :release => 1.0 }
       end
     }
     /
-    "{" pos_ws array pos_ws "}" {
+    c_brac_o array c_brac_c {
       def content
-        { :type => :timed_parallel , :content => elements[2].content , :index => 0 , :release => 1.0 }
+        { :type => :timed_parallel , :content => elements[1].content , :index => 0 , :release => 1.0 }
       end
     }
     /
@@ -113,9 +113,9 @@ grammar ForgeGrammar
       end
     }
     /
-    '(' pos_ws nat comma nat pos_ws ')' {
+    peren_o nat comma nat peren_c {
       def content
-        { :type => :spread , :content => { :ammount => elements[2].content , :per => elements[4].content } }
+        { :type => :spread , :content => { :ammount => elements[1].content , :per => elements[3].content } }
       end
     }
   end
@@ -200,16 +200,40 @@ grammar ForgeGrammar
     '~'
   end
   
-  rule pos_ws
-    ws*
+  rule comma
+    ws ',' ws
+  end
+  
+  rule peren_o
+    '(' ws
+  end
+  
+  rule peren_c
+    ws ')'
+  end
+  
+  rule s_brac_o
+    '[' ws
+  end
+  
+  rule s_brac_c
+    ws ']'
+  end
+  
+  rule c_brac_o
+    '{' ws
+  end
+  
+  rule c_brac_c
+    ws '}'
   end
   
   rule ws
-    [\s\t\r\n]+
+    WS?
   end
   
-  rule comma
-    pos_ws ',' pos_ws
+  rule WS
+    [\s\t\r\n]+
   end
 
 end
