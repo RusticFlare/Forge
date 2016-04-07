@@ -202,7 +202,7 @@ define :apply_stretchs do |list,curley_bracket_parent|
   end
 end
 
-define :forge do |symbol,string|
+define :forge do |symbol,string,sync_with: nil|
   with_bpm_mul 0.25 do
     anvil = parser.parse(string).content
     apply_mods anvil, false
@@ -210,6 +210,9 @@ define :forge do |symbol,string|
       with_fx :distortion, distort: 0.9 do
         with_fx :flanger, feedback: 0.2 do
           live_loop symbol do
+            if sync_with.is_a? Symbol
+              sync sync_with
+            end
             use_synth :prophet
             play_data_structure anvil
           end
