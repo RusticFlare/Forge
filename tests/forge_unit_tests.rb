@@ -5,7 +5,7 @@ parser = ForgeGrammarParser.new
 
 # Unit Tests
 
-anvil = parser.parse(" ").content
+anvil = parser.parse("").content
 assert valid_anvil? anvil
 assert_equal anvil, {:type=>:sequential, :content=>(ring {:type=>:silence, :release=>1.0, :mods=>[]})}
 apply_mods anvil, false
@@ -214,16 +214,13 @@ plan_data_structure anvil, 0.0, plan
 assert valid_forge_plan? plan
 assert_equal plan, [{:time=>0.0, :actions=>[{:type=>:note, :content=>[{:note=>45.0}], :release=>0.5, :mods=>[]}]}, {:time=>0.5, :actions=>[{:type=>:note, :content=>[{:note=>50.0}], :release=>0.5, :mods=>[]}]}]
 
-anvil = parser.parse("45").content
+anvil = parser.parse(" ").content
 assert valid_anvil? anvil
-assert_equal anvil, anvil
-# puts anvil
+assert_equal anvil, {:type=>:sequential, :content=>(ring {:type=>:silence, :release=>1.0, :mods=>[]})}
 apply_mods anvil, false
 assert valid_anvil? anvil
-assert_equal anvil, anvil
-# puts anvil
+assert_equal anvil, {:type=>:sequential, :content=>(ring {:type=>:silence, :release=>1.0, :mods=>[]})}
 plan = []
 plan_data_structure anvil, 0.0, plan
 assert valid_forge_plan? plan
-assert_equal plan, plan
-# puts plan
+assert_equal plan, []
