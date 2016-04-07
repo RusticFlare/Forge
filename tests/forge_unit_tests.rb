@@ -3,7 +3,18 @@ Treetop.load 'PATH_TO/grammar/forge_grammar.tt'
 
 parser = ForgeGrammarParser.new
 
-#tests
+# Unit Tests
+
+anvil = parser.parse("").content
+assert valid_anvil? anvil
+assert_equal anvil, {:type=>:sequential, :content=>(ring {:type=>:silence, :release=>1.0, :mods=>[]})}
+apply_mods anvil, false
+assert valid_anvil? anvil
+assert_equal anvil, {:type=>:sequential, :content=>(ring {:type=>:silence, :release=>1.0, :mods=>[]})}
+plan = []
+plan_data_structure anvil, 0.0, plan
+assert valid_forge_plan? plan
+assert_equal plan, []
 
 anvil = parser.parse("k").content
 assert valid_anvil? anvil
@@ -192,16 +203,24 @@ plan_data_structure anvil, 0.0, plan
 assert valid_forge_plan? plan
 assert_equal plan, [{:time=>0.0, :actions=>[{:type=>:note, :content=>[{:note=>45.0}, {:note=>50.0, :slide=>1}, {:note=>45.0, :slide=>0}], :release=>1.0, :mods=>[]}]}]
 
-anvil = parser.parse("45").content
+anvil = parser.parse("45 50").content
 assert valid_anvil? anvil
-assert_equal anvil, anvil
-# puts anvil
+assert_equal anvil, {:type=>:sequential, :content=>(ring {:type=>:note, :content=>[{:note=>45.0}], :release=>1.0, :mods=>[]}, {:type=>:note, :content=>[{:note=>50.0}], :release=>1.0, :mods=>[]})}
 apply_mods anvil, false
 assert valid_anvil? anvil
-assert_equal anvil, anvil
-# puts anvil
+assert_equal anvil, {:type=>:sequential, :content=>(ring {:type=>:note, :content=>[{:note=>45.0}], :release=>1.0, :mods=>[]}, {:type=>:note, :content=>[{:note=>50.0}], :release=>1.0, :mods=>[]})}
 plan = []
 plan_data_structure anvil, 0.0, plan
 assert valid_forge_plan? plan
-assert_equal plan, plan
-# puts plan
+assert_equal plan, [{:time=>0.0, :actions=>[{:type=>:note, :content=>[{:note=>45.0}], :release=>0.5, :mods=>[]}]}, {:time=>0.5, :actions=>[{:type=>:note, :content=>[{:note=>50.0}], :release=>0.5, :mods=>[]}]}]
+
+anvil = parser.parse(" ").content
+assert valid_anvil? anvil
+assert_equal anvil, {:type=>:sequential, :content=>(ring {:type=>:silence, :release=>1.0, :mods=>[]})}
+apply_mods anvil, false
+assert valid_anvil? anvil
+assert_equal anvil, {:type=>:sequential, :content=>(ring {:type=>:silence, :release=>1.0, :mods=>[]})}
+plan = []
+plan_data_structure anvil, 0.0, plan
+assert valid_forge_plan? plan
+assert_equal plan, []
