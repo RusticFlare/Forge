@@ -28,14 +28,14 @@
 <a id="to-use-forge" class="anchor" href="#to-use-forge" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>To use Forge</h2>
 
 <ol>
-<li><a href="http://sonic-pi.net/" title="Download Sonic Pi">Download and install Sonic Pi</a></li>
 <li>
-<a href="https://github.com/RusticFlare/Forge/archive/master.zip" title="Download Forge">Download the ZIP of this repository</a> and extract it into a suitable location</li>
-<li>Copy the contents of <a href="vendor/"><code>vendor/</code></a> into <code>PATH_TO/Sonic Pi/app/server/vendor/</code>
-</li>
+<a href="http://sonic-pi.net/" title="Download Sonic Pi">Download and install Sonic Pi</a> (<strong><em>DON'T LAUNCH IT YET</em></strong>)</li>
+<li>
+<a href="https://github.com/RusticFlare/Forge/archive/master.zip" title="Download Forge">Download the ZIP of this repository</a> and extract it into a suitable location (I extracted it into <code>C:\Users\James\Documents\Forge</code> so this is my <code>EXTRACTION_LOCATION</code>)</li>
+<li>Copy both folders in <a href="vendor/"><code>EXTRACTION_LOCATION\vendor\</code></a> into <code>PATH_TO\Sonic Pi\app\server\vendor\</code> (for me this is <code>C:\Program Files (x86)\Sonic Pi\app\server\vendor\</code>)</li>
 <li>Launch Sonic Pi</li>
-<li>Copy the contents of <a href="forge.rb"><code>forge.rb</code></a> into any Sonic Pi buffer</li>
-<li>Change <code>DIRECTORY = 'YOUR_PATH_HERE/forge'</code> on line 2 to the path of the folder you extracted in Step 2</li>
+<li>Copy the contents of <a href="forge.rb"><code>EXTRACTION_LOCATION\forge.rb</code></a> into any Sonic Pi buffer</li>
+<li>Change <code>DIRECTORY = 'EXTRACTION_LOCATION'</code> on line 2 to the path of the folder you extracted in Step 2</li>
 <li>Run the buffer (<strong><em>This must be run every time Sonic Pi is opened</em></strong>)</li>
 <li>Get coding</li>
 </ol>
