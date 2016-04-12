@@ -1,5 +1,5 @@
 require 'treetop'
-DIRECTORY = 'YOUR_PATH_HERE/forge'
+DIRECTORY = 'EXTRACTION_LOCATION'
 Treetop.load DIRECTORY + '/grammar/forge_grammar.tt'
 
 parser = ForgeGrammarParser.new
