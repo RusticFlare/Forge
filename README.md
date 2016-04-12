@@ -2,12 +2,12 @@
 Forge is a live coding language for generating heavy metal music. It is based on [Tidal](https://github.com/tidalcycles/Tidal) and built within [Sonic Pi](https://github.com/samaaron/sonic-pi).
 
 ## To use Forge
-1. [Download and install Sonic Pi](http://sonic-pi.net/ "Download Sonic Pi")
-2. [Download the ZIP of this repository](https://github.com/RusticFlare/Forge/archive/master.zip "Download Forge") and extract it into a suitable location
-3. Copy the contents of [`vendor/`](vendor/) into `PATH_TO/Sonic Pi/app/server/vendor/`
+1. [Download and install Sonic Pi](http://sonic-pi.net/ "Download Sonic Pi") (**_DON'T LAUNCH IT YET_**)
+2. [Download the ZIP of this repository](https://github.com/RusticFlare/Forge/archive/master.zip "Download Forge") and extract it into a suitable location (I extracted it into `C:\Users\James\Documents\Forge` so this is my `EXTRACTION_LOCATION`)
+3. Copy both folders in [`EXTRACTION_LOCATION\vendor\`](vendor/) into `PATH_TO\Sonic Pi\app\server\vendor\` (for me this is `C:\Program Files (x86)\Sonic Pi\app\server\vendor\`)
 4. Launch Sonic Pi
 5. Copy the contents of [`forge.rb`](forge.rb) into any Sonic Pi buffer
-6. Change `DIRECTORY = 'YOUR_PATH_HERE/forge'` on line 2 to the path of the folder you extracted in Step 2
+6. Change `DIRECTORY = "EXTRACTION_LOCATION"` on line 2 to the path of the folder you extracted in Step 2
 7. Run the buffer (**_This must be run every time Sonic Pi is opened_**)
 8. Get coding
 
