@@ -57,15 +57,15 @@ a {
   color: #fff;
   text-align: center;
   background-color: #159957;
-  background-image: linear-gradient(120deg, #155799, #159957); }
+  background-image: linear-gradient(120deg, #ff3399, #990099); }
 
 @media screen and (min-width: 64em) {
   .page-header {
-    padding: 5rem 6rem; } }
+    padding: 2rem 1rem; } }
 
 @media screen and (min-width: 42em) and (max-width: 64em) {
   .page-header {
-    padding: 3rem 4rem; } }
+    padding: 2rem 1rem; } }
 
 @media screen and (max-width: 42em) {
   .page-header {
@@ -112,7 +112,8 @@ a {
   margin-top: 2rem;
   margin-bottom: 1rem;
   font-weight: normal;
-  color: #159957; }
+  color: #cc00cc; 
+  text-align: center; }
 .main-content p {
   margin-bottom: 1em; }
 .main-content code {
